@@ -135,9 +135,15 @@ class Evaluator:
 		decoding = self.decode(encodedData)
 
 		self.router.clear()
-		self.router.addVertexToTours(self.depotNode)
+		for k_i in range(self.numTours):
+			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
+			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
+
 		self.router.processHeuristicSequence(decoding)
-		self.router.addVertexToTours(self.depotNode)
+
+		for k_i in range(self.numTours):
+			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
+			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		# statistics
 		#self.routerStats.addValue(self.router.getLengthOfLongestTour())

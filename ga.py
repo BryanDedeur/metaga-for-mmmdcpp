@@ -65,11 +65,11 @@ class GA:
 		self.objLines = []
 		self.timeLines = []
 
-		self.visualize = visualize
-		self.createVisuals()
-		if visualize:
-			plt.ion()
-			self.show()
+		# self.visualize = visualize
+		# self.createVisuals()
+		# if visualize:
+		# 	plt.ion()
+		# 	self.show()
 
 		# parallelization
 		self.processEvaluators = []
@@ -197,7 +197,7 @@ class GA:
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)
-			self.updateVisuals(gen)
+			# self.updateVisuals(gen)
 
 			# get the best objective value
 			if self.population.bestIndividual.objective < bestSeedObj:
