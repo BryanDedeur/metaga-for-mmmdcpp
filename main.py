@@ -12,8 +12,6 @@ from os.path import isfile, join
 def main():
     # capture the arguements
     args = sys.argv
-    # print(args)
-    # print(len(args))
     
     # read the arguments
     problemInstancePath = ""
