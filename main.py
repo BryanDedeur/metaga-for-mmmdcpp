@@ -36,7 +36,7 @@ def main():
     # create the graph
     gph = graph.Graph(problemInstancePath)
     gph.SolveAndCacheShortestPaths()
-    gph.View(False)
+    #gph.View(False)
 
     # # run for all values of k
     for k in kValues:
@@ -57,7 +57,7 @@ def main():
         for seed in seeds:
             genAlg.run(seed)
             evalator.save('evalResults.txt')
-            evalator.router.View()
+            #evalator.router.View()
             evalator.reset()
 
         print('overall best: ' + str(round(genAlg.getOverallBestObj(),2)))
