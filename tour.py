@@ -53,14 +53,14 @@ class Tour:
 
         # plot the start and end node
         ax.scatter(self.graph.vertices[self.vertexSequence[0]][0], self.graph.vertices[self.vertexSequence[0]][1], marker = "*", color='red', zorder=9999)
-        ax.scatter(self.graph.vertices[self.vertexSequence[0]][0], self.graph.vertices[self.vertexSequence[len(self.vertexSequence) -1 ]][1], marker = "*", color='red', zorder=9999)
+        ax.scatter(self.graph.vertices[self.vertexSequence[-1]][0], self.graph.vertices[self.vertexSequence[-1]][1], marker = "*", color='blue', zorder=9999)
         return
 
     def View(self, id, color):
         fig, ax = plt.subplots(1, figsize=(12, 4))
         ax.title.set_text(self.graph.name + ' tour ' + str(id))
         self.graph.plot(ax, False, False)
-        self.plot(ax, color)
+        self.plot(ax, "black")
         # make custom legend with route information
         #tour_length = mlines.Line2D(color=color, label='length: ' + str(round(self.cost, 2)))
         plt.show(block=False)

@@ -136,14 +136,22 @@ class Evaluator:
 
 		self.router.clear()
 		for k_i in range(self.numTours):
-			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
+			k_depot = self.graph.SizeV() - 2
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		self.router.processHeuristicSequence(decoding)
 
 		for k_i in range(self.numTours):
-			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
-			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
+			# compare lengths to all 4 corners of the graph
+			bestCornerNode = 0
+			bestCornerNodeDistance = float('inf')
+			for i in range(4):
+				cornerNode = self.graph.SizeV() - (i - (math.floor(i/4)*4)) - 1
+				connectingRoute = self.graph.GetShortestTourBetweenVertices(self.router.tours[k_i].vertexSequence[-1],  cornerNode)
+				if bestCornerNodeDistance > connectingRoute.cost:
+					bestCornerNode = cornerNode
+					bestCornerNodeDistance = connectingRoute.cost
+			self.router.addVertexToTour(bestCornerNode, self.router.tours[k_i])
 
 		# statistics
 		#self.routerStats.addValue(self.router.getLengthOfLongestTour())
