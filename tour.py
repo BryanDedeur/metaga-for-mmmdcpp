@@ -17,6 +17,7 @@ class Tour:
         self.edgeSequence = []
         self.cost = 0
         self.ax = None
+        self.seed = 0
 
     def clear(self):
         self.vertexSequence.clear()
@@ -49,7 +50,7 @@ class Tour:
         #xint, yint = interpolate.splev(np.linspace(0, 1, 500), f)
         ax.plot(x, y, color = col, linewidth=2, label='length: ' + str(round(self.cost, 2)))
         
-        plt.legend(loc='upper left')
+        #plt.legend(loc='upper left')
 
         # plot the start and end node
         ax.scatter(self.graph.vertices[self.vertexSequence[0]][0], self.graph.vertices[self.vertexSequence[0]][1], marker = "*", color='red', zorder=9999)
@@ -57,13 +58,14 @@ class Tour:
         return
 
     def View(self, id, color):
-        fig, ax = plt.subplots(1, figsize=(12, 4))
+        fig, ax = plt.subplots(1, figsize=(4, 4))
         ax.title.set_text(self.graph.name + ' tour ' + str(id))
         self.graph.plot(ax, False, False)
-        self.plot(ax, color)
+        self.plot(ax, 'black')
         # make custom legend with route information
         #tour_length = mlines.Line2D(color=color, label='length: ' + str(round(self.cost, 2)))
-        plt.show(block=False)
+        #plt.show(block=False)
+        plt.savefig(fname='img/' + self.graph.name + '-'+ str(self.seed)+ 'k' + str(id))
         return ax
 
 

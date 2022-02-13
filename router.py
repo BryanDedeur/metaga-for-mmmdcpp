@@ -13,6 +13,7 @@ class Router:
 		self.graph = gph
 		self.tours = []
 		self.nearestEdgesSetSize = self.graph.SizeE()
+		self.seed = 0
 
 		for i in range(numTours):
 			self.tours.append(tour.Tour(self.graph))
@@ -59,7 +60,10 @@ class Router:
 		return len(self.tours)
 
 	def setSeed(self, seed):
+		self.seed = seed
 		random.seed(seed)
+		for k in range(len(self.tours)):
+			self.tours[k].seed = seed
 
 	def View(self):
 		i = 0
@@ -76,6 +80,7 @@ class Router:
 		fig, ax = plt.subplots(1, figsize=(4, 4))
 		ax.title.set_text('graph ' + self.graph.name.lower())
 		self.ViewOverlap(ax)
+		plt.savefig(fname='img/' + self.graph.name + '-overlap-'+ str(self.seed)+ 'k'+str(len(self.tours)))
 
 	def colorFader(self, c1,c2,mix=0): #fade (linear interpolate) from color c1 (at mix=0) to c2 (mix=1)
 		c1=np.array(mpl.colors.to_rgb(c1))
@@ -105,7 +110,7 @@ class Router:
 		legend_elements = [
 			Line2D([0], [0], color=minColor, linewidth=2 * minCount, label=str(minCount) + " visits"),
 			Line2D([0], [0], color=maxColor, linewidth=2 * maxCount, label=str(maxCount) + " visits")]
-		ax.legend(handles=legend_elements, loc='upper right')
+		#ax.legend(handles=legend_elements, loc='upper right')
 
 	def to_string(self, delimiter = ',', ending = '\n'):
 		data = [
@@ -123,9 +128,10 @@ class Router:
 		return formatted
 
 	def save(self, path):
-		f = open(path, "a")
-		f.write(self.to_string())
-		f.close()
+		# f = open(path, "a")
+		# f.write(self.to_string())
+		# f.close()
+		self.View()
 
 	def copy(self, other):
 		self.graph = other.graph

@@ -55,6 +55,8 @@ class Evaluator:
 			round(self.timeStats.sum, 3),
 			self.bestEvalCount
 			]
+		for k in range(len(self.router.tours)):
+			data.append(self.bestRouter.tours[k].cost)
 		formatted = ''
 		for i in range(len(data)):
 			formatted += str(data[i])
@@ -68,6 +70,7 @@ class Evaluator:
 		f = open(path, "a")
 		f.write(self.to_string())
 		f.close()
+		self.bestRouter.save("test")
 
 	def GetProblemName(self):
 		return self.graph.name
