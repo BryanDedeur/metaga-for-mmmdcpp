@@ -17,6 +17,7 @@ class Router:
 
 		for i in range(numTours):
 			self.tours.append(tour.Tour(self.graph))
+			self.tours[i].k = numTours
 
 		self.colors = ['red', 'blue', 'green', 'orange', 'purple', 'maroon', 'deepskyblue', 'lime', 'gold', 'hotpink']
 
@@ -80,7 +81,8 @@ class Router:
 		fig, ax = plt.subplots(1, figsize=(4, 4))
 		ax.title.set_text('graph ' + self.graph.name.lower())
 		self.ViewOverlap(ax)
-		plt.savefig(fname='img/' + self.graph.name + '-overlap-'+ str(self.seed)+ 'k'+str(len(self.tours)))
+		plt.savefig(fname='img/' + self.graph.name +'-k'+str(len(self.tours))+'-'+str(self.seed) +'-overlap')
+		plt.close()
 
 	def colorFader(self, c1,c2,mix=0): #fade (linear interpolate) from color c1 (at mix=0) to c2 (mix=1)
 		c1=np.array(mpl.colors.to_rgb(c1))
@@ -138,6 +140,8 @@ class Router:
 		self.tours = []
 		for t in range(len(other.tours)):
 			self.tours.append(tour.Tour(self.graph))
+			self.tours[t].seed = other.seed
+			self.tours[t].k = len(other.tours)
 		for i in range(len(self.tours)):
 			for v in other.tours[i].vertexSequence:
 				self.tours[i].AddVertex(v)
@@ -146,6 +150,7 @@ class Router:
 			self.unvisitedEdges.append(e)
 		for e in other.visitedEdges:
 			self.visitedEdges.append(e)
+		self.seed = other.seed
 		
 	def getSumTourLengths(self):
 		sum = 0
