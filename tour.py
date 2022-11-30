@@ -70,7 +70,6 @@ class Tour:
         plt.close()
         return ax
 
-
     def GraphExists(self):
         if self.graph == None:
             print("Trying to access a graph that has not been specified.")
