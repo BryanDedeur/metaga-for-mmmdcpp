@@ -45,11 +45,11 @@ def main():
         #     print("K(" + str(k_i) + ") robot will deploy at " + str(k_depot))
 
         # create the evaluator
-        evalator = evaluator.Evaluator(gph, k)
-        evalator.depotNode = 0
+        evalor = evaluator.Evaluator(gph, k)
+        evalor.depotNode = 0
 
         # create the genetic algorithm with the evaluator
-        genAlg = ga.GA(evalator, True)
+        genAlg = ga.GA(evalor, True)
         genAlg.init()
 
         # for every seed run the GA
@@ -57,9 +57,9 @@ def main():
 
         for seed in seeds:
             genAlg.run(seed)
-            evalator.save('evalResults.txt')
-            # evalator.router.View()
-            evalator.reset()
+            evalor.save('evalResults.txt')
+            # evalor.router.View()
+            evalor.reset()
 
         print('overall best: ' + str(round(genAlg.getOverallBestObj(),2)))
         print('per seed average best: ' + str(round(genAlg.getAveSeedBestObj(),2)))
