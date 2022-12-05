@@ -20,8 +20,6 @@ class Evaluator:
 		self.timeStats = statistics.Statistics()
 		self.count = 0
 
-		self.chromosome_counter = [] # Keeps track of stuff
-
 		self.bestRouter = None
 		self.bestObjective = None
 		self.bestEncoding = []
@@ -33,9 +31,6 @@ class Evaluator:
 		# encoding
 		self.geneLength = round(math.sqrt(len(self.router.heuristics))) # num bits (1 bits = 2 heuristics) (2 bits = 4 heursitics) (3 bits = 8 heuristics)
 		self.chromeLength = self.graph.SizeE() * self.geneLength
-
-		for i in range(self.graph.SizeE()):
-			self.chromosome_counter.append({0: 0, 1: 0, 2: 0, 3: 0})
 
 		self.minAllele = 0
 		self.maxAllele = 3
@@ -74,21 +69,6 @@ class Evaluator:
 	def save(self, path):
 		f = open(path, "a")
 		f.write(self.to_string())
-		# saving the chromosome counter
-		temp = ''
-		for i in range(len(self.chromosome_counter)):
-			temp += str(i) + ', '
-			maxKey = 0
-			maxValue = 0
-			for key, value in self.chromosome_counter[i].items():
-				temp += str(value) + ', '
-				if value > maxValue:
-					maxKey = key
-					maxValue = value
-				self.chromosome_counter[i][key] = 0
-			temp += str(maxKey) + '\n'
-		
-		f.write(temp)
 		f.close()
 		self.bestRouter.save("test")
 
@@ -156,10 +136,6 @@ class Evaluator:
 		start = timer()
 
 		decoding = self.decode(encodedData)
-		
-		# take count of occurances
-		for i in range(len(self.chromosome_counter)):
-			self.chromosome_counter[i][decoding[i]] += 1
 
 		self.router.clear()
 		for k_i in range(self.numTours):
