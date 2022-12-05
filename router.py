@@ -167,13 +167,17 @@ class Router:
 			self.unvisitedEdges.append(i)
 
 	def processHeuristicSequence(self, sequence):
+		temp = []
 		for h in sequence:
 			# increase the counter
 			self.heuristicSelectionCounter[h] += 1
 			# find edge using heuristic
 			shortestTour = self.getShortestTour()
-			e = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
+			e, equidistantEdges, totalEdges = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
 			self.addEdgeToTour(e, shortestTour)
+			# update sequence if no heuristic is used
+			temp.append((h, equidistantEdges, totalEdges))
+		return temp
 
 	def getUnvisitedEdges(self):
 		return self.unvisitedEdges
@@ -202,7 +206,7 @@ class Router:
 	def getSetOfNearestEdges(self, vertex, maxSetSize = -1, sort = True):
 		allShortestTourEdgePairs = self.getShortestToursToAllUnvisitedEdgesFromVertex(vertex)
 		if len(allShortestTourEdgePairs) == 0:
-			return []
+			return [], len(allShortestTourEdgePairs)
 		setOfEdges = []
 		distanceToNearestEdges = allShortestTourEdgePairs[0][0].cost
 		for tourEdgePair in allShortestTourEdgePairs:
@@ -219,12 +223,12 @@ class Router:
 				else:
 					break 
 		def getLengthOfEdge(edgeId):
-			return self.graph.GetEdgeCost(edgeId)
+			return self.graph.GetEdgeCost(edgeId), len(allShortestTourEdgePairs)
 		if sort:
 			setOfEdges.sort(key=getLengthOfEdge)
 		# for e in setOfEdges:
 		# 	print(self.graph.GetEdgeCost(e))
-		return setOfEdges
+		return setOfEdges, len(allShortestTourEdgePairs)
 
 	# ============================================== HEURISTICS FOR EDGE FINDING ================================================================= #
 
@@ -264,10 +268,11 @@ class Router:
 		# 	# TODO maybe consider also if the number of visited edges at vertex = 0
 		# 	setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1], setSize)
 		# else:
-		setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
+		setOfSortedLengthEdges, totalUnvisitedEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
+		
 		if len(setOfSortedLengthEdges) == 0:
-			return -1
-		return setOfSortedLengthEdges[0]
+			return -1, 0, totalUnvisitedEdges
+		return setOfSortedLengthEdges[0], len(setOfSortedLengthEdges), totalUnvisitedEdges
 
 	def findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges(self, tourOfInterest, setSize):
 		# setOfSortedLengthEdges = []
@@ -275,10 +280,10 @@ class Router:
 		# 	# TODO maybe consider also if the number of visited edges at vertex = 0
 		# 	setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1], setSize)
 		# else:
-		setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
+		setOfSortedLengthEdges, totalUnvisitedEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
 		if len(setOfSortedLengthEdges) == 0:
-			return -1
-		return setOfSortedLengthEdges[int((len(setOfSortedLengthEdges) - 1) / 2)]
+			return -1, 0, totalUnvisitedEdges
+		return setOfSortedLengthEdges[int((len(setOfSortedLengthEdges) - 1) / 2)], len(setOfSortedLengthEdges), totalUnvisitedEdges
 
 	def findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges(self, tourOfInterest, setSize):
 		# setOfSortedLengthEdges = []
@@ -286,10 +291,10 @@ class Router:
 		# 	# TODO maybe consider also if the number of visited edges at vertex = 0
 		# 	setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1], setSize)
 		# else:
-		setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
+		setOfSortedLengthEdges, totalUnvisitedEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
 		if len(setOfSortedLengthEdges) == 0:
-			return -1
-		return setOfSortedLengthEdges[random.randint(0, len(setOfSortedLengthEdges) - 1)]
+			return -1, 0, totalUnvisitedEdges
+		return setOfSortedLengthEdges[random.randint(0, len(setOfSortedLengthEdges) - 1)], len(setOfSortedLengthEdges), totalUnvisitedEdges
 
 	def findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges(self, tourOfInterest, setSize):
 		# setOfSortedLengthEdges = []
@@ -297,10 +302,10 @@ class Router:
 		# 	# TODO maybe consider also if the number of visited edges at vertex = 0
 		# 	setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1], setSize)
 		# else:
-		setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
+		setOfSortedLengthEdges, totalUnvisitedEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1])
 		if len(setOfSortedLengthEdges) == 0:
-			return -1
-		return setOfSortedLengthEdges[len(setOfSortedLengthEdges) - 1]
+			return -1, 0, totalUnvisitedEdges
+		return setOfSortedLengthEdges[len(setOfSortedLengthEdges) - 1], len(setOfSortedLengthEdges), totalUnvisitedEdges
 
 	def findLowestCostNearestUnvisitedEdge(self, tourOfInterest, setSize):
 		setOfSortedLengthEdges = self.getSetOfNearestEdges(tourOfInterest.vertexSequence[-1], setSize)

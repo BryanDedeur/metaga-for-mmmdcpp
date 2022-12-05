@@ -34,7 +34,26 @@ class Evaluator:
 
 		self.minAllele = 0
 		self.maxAllele = 3
-	
+
+		self.chromosome_counter = [] # keeps track of heuristic frequency
+		
+		for i in range(self.graph.SizeE()):
+			self.chromosome_counter.append({0: 0, 1: 0, 2: 0, 3: 0, -1: 0})
+
+	def count_heuristic_frequency(self, decoding):
+		# decoding = heuristic, numEquidistant, totalNumber
+		# take count of occurances
+		for i in range(len(self.chromosome_counter)):
+			if decoding[i][1] == 1:
+				self.chromosome_counter[i][-1] += 1
+			else:
+				self.chromosome_counter[i][decoding[i][0]] += 1 
+		
+	def reset_heuristic_frequency(self):
+		for i in range(len(self.chromosome_counter)):
+			for key, value in self.chromosome_counter[i].items():
+				self.chromosome_counter[i][key] = 0
+
 	def reset(self):
 		self.routerStats.clear()
 		self.timeStats.clear()
@@ -142,7 +161,7 @@ class Evaluator:
 			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
-		self.router.processHeuristicSequence(decoding)
+		decoding_with_unused_heuristics = self.router.processHeuristicSequence(decoding)
 
 		for k_i in range(self.numTours):
 			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
@@ -155,7 +174,10 @@ class Evaluator:
 
 		endTime = timer() - start
 		self.timeStats.addValue(endTime)
-		self.storeIfBest(self.router, encodedData, decoding, self.count)
+		isBest = self.storeIfBest(self.router, encodedData, decoding, self.count)
+		if (isBest):
+			print("NICE")
+		self.count_heuristic_frequency(decoding_with_unused_heuristics)
 
 		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId
 
