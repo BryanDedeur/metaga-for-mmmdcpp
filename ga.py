@@ -194,6 +194,21 @@ class GA:
 
 			if (gen % int(self.options.maxGen * 0.05) == 0):
 				print('.', end = '')
+
+			# if the final generation
+			if gen == (self.options.maxGen - 1):
+				# write the individuals result chromosome to a file
+				f = open("final_population_chromosomes.csv", "a")
+				f.write("seed: " + str(self.seed) + "\n")
+				for i in range(0, int(len(self.population.individuals) / 2)):
+					individual = self.population.individuals[i]
+					out = ""
+					for j in range(len(individual.result_heursitics_used)):
+						out += str(individual.result_heursitics_used[j]) + ","
+					out += "\n"
+					f.write(out)
+				f.close()
+
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)

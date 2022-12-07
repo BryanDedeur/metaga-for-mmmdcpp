@@ -14,6 +14,8 @@ class Individual:
 		self.objective = 0
 		self.evalTime = 0
 
+		self.result_heursitics_used = []
+
 		self.scaledFitness = 0
 	
 	# allocates memory for the individual
@@ -40,6 +42,8 @@ class Individual:
 		self.fitness = result[0]
 		self.objective = result[1]
 		self.evalTime = result[2]
+		self.result_heursitics_used = result[4]
+		
 		return result
 
 	def swap(self, p1, p2):

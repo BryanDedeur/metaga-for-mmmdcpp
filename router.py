@@ -169,14 +169,17 @@ class Router:
 	def processHeuristicSequence(self, sequence):
 		temp = []
 		for h in sequence:
+			h_temp = h
 			# increase the counter
 			self.heuristicSelectionCounter[h] += 1
 			# find edge using heuristic
 			shortestTour = self.getShortestTour()
 			e, equidistantEdges, totalEdges = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
+			if equidistantEdges <= 1:
+				h_temp = -1
 			self.addEdgeToTour(e, shortestTour)
 			# update sequence if no heuristic is used
-			temp.append((h, equidistantEdges, totalEdges))
+			temp.append(h_temp)
 		return temp
 
 	def getUnvisitedEdges(self):

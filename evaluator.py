@@ -175,9 +175,9 @@ class Evaluator:
 		endTime = timer() - start
 		self.timeStats.addValue(endTime)
 		isBest = self.storeIfBest(self.router, encodedData, decoding, self.count)
-		if (isBest):
-			print("NICE")
-		self.count_heuristic_frequency(decoding_with_unused_heuristics)
+		# if (isBest):
+		# 	print("NICE")
+		#self.count_heuristic_frequency(decoding_with_unused_heuristics)
 
-		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId
+		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId, decoding_with_unused_heuristics
 
