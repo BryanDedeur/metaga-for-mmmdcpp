@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 3 Seeds",
+            "name": "MetaGA: 3 Seeds",
             "type": "python",
             "request": "launch",
             "program": "main.py",
@@ -13,11 +13,18 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: 10 Seeds",
+            "name": "MetaGA: 30 Seeds",
             "type": "python",
             "request": "launch",
             "program": "main.py",
             "args": ["bridge-graph-instances/standard/howe/howe1.csv", "2", "8115, 3520, 8647, 9420, 3116, 6377, 6207, 4187, 3641, 8591, 3580, 8524, 2650, 2811, 9963, 7537, 3472, 3714, 8158, 7284, 6948, 6119, 5253, 5134, 7350, 2652, 9968, 3914, 6899, 4715"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Plot Data",
+            "type": "python",
+            "request": "launch",
+            "program": "plot_data.py",
             "console": "integratedTerminal"
         }
     ]
