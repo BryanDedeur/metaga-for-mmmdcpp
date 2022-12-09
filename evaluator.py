@@ -161,7 +161,7 @@ class Evaluator:
 			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
-		decoding_with_unused_heuristics = self.router.processHeuristicSequence(decoding)
+		number_of_edge_options = self.router.processHeuristicSequence(decoding)
 
 		for k_i in range(self.numTours):
 			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
@@ -179,5 +179,5 @@ class Evaluator:
 		# 	print("NICE")
 		#self.count_heuristic_frequency(decoding_with_unused_heuristics)
 
-		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId, decoding_with_unused_heuristics
+		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId, number_of_edge_options, decoding
 

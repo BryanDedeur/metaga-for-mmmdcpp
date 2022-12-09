@@ -14,7 +14,8 @@ class Individual:
 		self.objective = 0
 		self.evalTime = 0
 
-		self.result_heursitics_used = []
+		self.num_edges_while_decoding = []
+		self.decoded_chromosome = []
 
 		self.scaledFitness = 0
 	
@@ -42,7 +43,8 @@ class Individual:
 		self.fitness = result[0]
 		self.objective = result[1]
 		self.evalTime = result[2]
-		self.result_heursitics_used = result[4]
+		self.num_edges_while_decoding = result[4]
+		self.decoded_chromosome = result[5]
 		
 		return result
 

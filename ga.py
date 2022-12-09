@@ -176,6 +176,31 @@ class GA:
 					break
 		return numSeeds / self.runCount
 	
+	def outputPopulationChromosomes(self, filename):
+		# write the individuals result chromosome to a file
+		f = open("results/" + filename, "a")
+		f.write("seed, " + str(self.seed) + "\n")
+		for i in range(0, int(self.population.sizeParents() / 2)):
+			individual = self.population.individuals[i]
+			out = ""
+			for j in range(len(individual.decoded_chromosome)):
+				out += str(individual.decoded_chromosome[j]) + ","
+			out += "\n"
+			f.write(out)
+		f.close()
+
+	def outputPopulationNumberOfEdgesWhileReadingChromosome(self, filename):
+		# write the individuals result chromosome to a file
+		f = open("results/" + filename, "a")
+		f.write("seed, " + str(self.seed) + "\n")
+		for i in range(0, int(self.population.sizeParents() / 2)):
+			individual = self.population.individuals[i]
+			out = ""
+			for j in range(len(individual.num_edges_while_decoding)):
+				out += str(individual.num_edges_while_decoding[j]) + ","
+			out += "\n"
+			f.write(out)
+		f.close()
 
 	def run(self, seed = 0):
 		# set the seed
@@ -188,6 +213,9 @@ class GA:
 			if gen == 0:
 				# randomize population with whatever seed is set
 				self.population.randomize(0, self.population.sizeParents())
+
+				self.outputPopulationChromosomes("first_population_chromosomes.csv")
+				self.outputPopulationNumberOfEdgesWhileReadingChromosome("first_population_num_edges.csv")
 			else:
 				# regenerate new population
 				self.population.generate()
@@ -195,20 +223,10 @@ class GA:
 			if (gen % int(self.options.maxGen * 0.05) == 0):
 				print('.', end = '')
 
-			# if the final generation
-			if gen == 0:
-				# write the individuals result chromosome to a file
-				f = open("final_population_chromosomes.csv", "a")
-				f.write("seed: " + str(self.seed) + "\n")
-				for i in range(0, int(len(self.population.individuals) / 2)):
-					individual = self.population.individuals[i]
-					out = ""
-					for j in range(len(individual.result_heursitics_used)):
-						out += str(individual.result_heursitics_used[j]) + ","
-					out += "\n"
-					f.write(out)
-				f.close()
-
+			# if the final generation				
+			if gen == self.options.maxGen - 1:
+				self.outputPopulationChromosomes("last_population_chromosomes.csv")
+				self.outputPopulationNumberOfEdgesWhileReadingChromosome("last_population_num_edges.csv")
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)
