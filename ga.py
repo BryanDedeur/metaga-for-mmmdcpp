@@ -196,7 +196,7 @@ class GA:
 				print('.', end = '')
 
 			# if the final generation
-			if gen == (self.options.maxGen - 1):
+			if gen == 0:
 				# write the individuals result chromosome to a file
 				f = open("final_population_chromosomes.csv", "a")
 				f.write("seed: " + str(self.seed) + "\n")

@@ -179,7 +179,7 @@ class Router:
 				h_temp = -1
 			self.addEdgeToTour(e, shortestTour)
 			# update sequence if no heuristic is used
-			temp.append(h_temp)
+			temp.append(equidistantEdges)
 		return temp
 
 	def getUnvisitedEdges(self):
