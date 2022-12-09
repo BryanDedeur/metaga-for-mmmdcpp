@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 
 def plot_population_chromosome(filename, keyword):
-    f = open("results/" + filename, "r")
+    f = open(filename, "r")
     lines = f.readlines()
     seeds = {}
     seed = ''
@@ -63,5 +63,4 @@ def plot_population_chromosome(filename, keyword):
     plt.show()
     print()
 
-
-plot_population_chromosome('howe1_k2_30_seed/last_population_chromosomes.csv', "30 Seed Avg Howe1 k=2 Last")
+plot_population_chromosome('results/last_population_chromosomes.csv', "30 Seed Avg Howe1 k=2 Last")
