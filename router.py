@@ -39,15 +39,15 @@ class Router:
 
 		self.heuristics = [
 			# same distance unvisited edges
-			self.findLowestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
+			# self.findLowestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
+			# self.findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
+			# self.findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
+			# self.findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
 			# until set size of univisted egdes
-			# self.findLowestCostNearestUnvisitedEdge,
-			# self.findMidCostNearestUnvisitedEdge,
-			# self.findRandomCostNearestUnvisitedEdge,
-			# self.findHighestCostNearestUnvisitedEdge
+			self.findLowestCostNearestUnvisitedEdge,
+			self.findMidCostNearestUnvisitedEdge,
+			self.findRandomCostNearestUnvisitedEdge,
+			self.findHighestCostNearestUnvisitedEdge
 			# edges of degree
 			#self.findEdgeConnectedToOddDegreeVertexWithinNearestUnivistedEdges
 			#self.findEdgeConnectedToEvenDegreeVertexWithinNearestUnivistedEdges
@@ -173,7 +173,8 @@ class Router:
 			self.heuristicSelectionCounter[h] += 1
 			# find edge using heuristic
 			shortestTour = self.getShortestTour()
-			e = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
+			# e = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
+			e = self.heuristics[h](shortestTour, len(self.unvisitedEdges))
 			self.addEdgeToTour(e, shortestTour)
 
 	def getUnvisitedEdges(self):
