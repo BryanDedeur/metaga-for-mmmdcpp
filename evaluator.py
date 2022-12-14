@@ -66,11 +66,12 @@ class Evaluator:
 				formatted += ending
 		return formatted
 
-	def save(self, path):
+	def save(self, path, save_best_routes = False):
 		f = open(path, "a")
 		f.write(self.to_string())
 		f.close()
-		self.bestRouter.save("test")
+		if save_best_routes:
+			self.bestRouter.save()
 
 	def GetProblemName(self):
 		return self.graph.name
