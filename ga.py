@@ -176,11 +176,11 @@ class GA:
 					break
 		return numSeeds / self.runCount
 	
-	def outputPopulationChromosomes(self, filename):
+	def outputPopulationChromosomes(self, filename, pop_start, pop_end):
 		# write the individuals result chromosome to a file
 		f = open("results/" + filename, "a")
 		f.write("seed, " + str(self.seed) + "\n")
-		for i in range(0, int(self.population.sizeParents() / 2)):
+		for i in range(0, self.population.sizeParents()):
 			individual = self.population.individuals[i]
 			out = ""
 			for j in range(len(individual.decoded_chromosome)):
@@ -189,11 +189,11 @@ class GA:
 			f.write(out)
 		f.close()
 
-	def outputPopulationNumberOfEdgesWhileReadingChromosome(self, filename):
+	def outputPopulationNumberOfEdgesWhileReadingChromosome(self, filename, pop_start, pop_end):
 		# write the individuals result chromosome to a file
 		f = open("results/" + filename, "a")
 		f.write("seed, " + str(self.seed) + "\n")
-		for i in range(0, int(self.population.sizeParents() / 2)):
+		for i in range(pop_start, pop_end):
 			individual = self.population.individuals[i]
 			out = ""
 			for j in range(len(individual.num_edges_while_decoding)):
@@ -214,8 +214,8 @@ class GA:
 				# randomize population with whatever seed is set
 				self.population.randomize(0, self.population.sizeParents())
 
-				self.outputPopulationChromosomes("first_population_chromosomes.csv")
-				self.outputPopulationNumberOfEdgesWhileReadingChromosome("first_population_num_edges.csv")
+				self.outputPopulationChromosomes("first_population_chromosomes.csv", 0, self.population.sizeParents())
+				self.outputPopulationNumberOfEdgesWhileReadingChromosome("first_population_num_edges.csv", 0, self.population.sizeParents())
 			else:
 				# regenerate new population
 				self.population.generate()
@@ -225,8 +225,8 @@ class GA:
 
 			# if the final generation				
 			if gen == self.options.maxGen - 1:
-				self.outputPopulationChromosomes("last_population_chromosomes.csv")
-				self.outputPopulationNumberOfEdgesWhileReadingChromosome("last_population_num_edges.csv")
+				self.outputPopulationChromosomes("last_population_chromosomes.csv", 0, self.population.sizeParents())
+				self.outputPopulationNumberOfEdgesWhileReadingChromosome("last_population_num_edges.csv", 0, self.population.sizeParents())
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)
