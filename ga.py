@@ -197,7 +197,8 @@ class GA:
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)
-			# self.updateVisuals(gen)
+			if self.visualize:
+				self.updateVisuals(gen)
 
 			# get the best objective value
 			if self.population.bestIndividual.objective < bestSeedObj:

@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "MetaGA: gdb8, k=2, 3 Seeds",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "args": ["benchmarks/gdb/gdb8.dat", "2", "8115, 3520, 8647"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "MetaGA: howe1, k=2, 3 Seeds",
             "type": "python",
             "request": "launch",

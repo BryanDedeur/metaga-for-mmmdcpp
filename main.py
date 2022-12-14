@@ -45,7 +45,7 @@ def main():
         evalor.depotNode = 0
 
         # create the genetic algorithm with the evaluator
-        visualize_ga = False
+        visualize_ga = True
         meta_ga = ga.GA(evalor, visualize_ga)
         meta_ga.init()
 
