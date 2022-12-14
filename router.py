@@ -78,10 +78,11 @@ class Router:
 
 			i += 1
 		# plt.show()
+
 		fig, ax = plt.subplots(1, figsize=(4, 4))
 		ax.title.set_text('graph ' + self.graph.name.lower())
 		self.ViewOverlap(ax)
-		plt.savefig(fname='img/' + self.graph.name +'-k'+str(len(self.tours))+'-'+str(self.seed) +'-overlap')
+		#plt.savefig(fname='img/' + self.graph.name +'-k'+str(len(self.tours))+'-'+str(self.seed) +'-overlap')
 		plt.close()
 
 	def colorFader(self, c1,c2,mix=0): #fade (linear interpolate) from color c1 (at mix=0) to c2 (mix=1)

@@ -66,7 +66,7 @@ class Tour:
         # make custom legend with route information
         #tour_length = mlines.Line2D(color=color, label='length: ' + str(round(self.cost, 2)))
         #plt.show(block=False)
-        plt.savefig(fname='img/' + self.graph.name + '-k=' + str(self.k) + '-'+ str(self.seed)+'-k' + str(id))
+        #plt.savefig(fname='img/' + self.graph.name + '-k=' + str(self.k) + '-'+ str(self.seed)+'-k' + str(id))
         plt.close()
         return ax
 
