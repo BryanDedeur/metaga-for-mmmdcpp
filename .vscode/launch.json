@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 3 Seeds",
+            "name": "MetaGA: howe1, k=2, 3 Seeds",
             "type": "python",
             "request": "launch",
             "program": "main.py",
@@ -13,7 +13,15 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: 10 Seeds",
+            "name": "MetaGA: howe1, k=2, 10 Seeds",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "args": ["bridge-graph-instances/standard/howe/howe1.csv", "2", "8115, 3520, 8647, 9420, 3116, 6377, 6207, 4187, 3641, 8591"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "MetaGA: howe1, k=2, 30 Seeds",
             "type": "python",
             "request": "launch",
             "program": "main.py",
