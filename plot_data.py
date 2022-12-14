@@ -1,9 +1,10 @@
 import numpy as np
+import os
 from matplotlib import pyplot as plt 
 
 
-def plot_population_chromosome(filename, keyword):
-    f = open(filename, "r")
+def plot_population_chromosome(folder, filename, keyword, save_filename):
+    f = open(folder + filename, "r")
     lines = f.readlines()
     seeds = {}
     seed = ''
@@ -62,11 +63,15 @@ def plot_population_chromosome(filename, keyword):
         plt.plot(x, y, label = 'H' + str(values[i])) 
     plt.ylim(0, 100)
     plt.legend()
-    plt.show()
-    print()
+    plt.rcParams["savefig.directory"] = os.curdir + folder
+    save_filename = folder + save_filename + ".png"
+    plt.savefig(save_filename)
+    #plt.show()
+    plt.clf()
+    print('saved img:' + save_filename)
 
-def plot_population_edge_options(filename, keyword):
-    f = open(filename, "r")
+def plot_population_edge_options(folder, filename, keyword, save_filename):
+    f = open(folder + filename, "r")
     lines = f.readlines()
     seeds = {}
     seed = ''
@@ -136,10 +141,15 @@ def plot_population_edge_options(filename, keyword):
 
     plt.ylim(0, 10)
     #plt.legend()
-    plt.show()
-    print()
+    plt.rcParams["savefig.directory"] = os.curdir + folder
+    save_filename = folder + save_filename + ".png"
+    plt.savefig(save_filename)
+    #plt.show()
+    plt.clf()
+    print('saved img: ' + save_filename)
 
-plot_population_chromosome('results/howe1_k4_30_seed/last_population_chromosomes.csv', "30 Seed Avg Howe1 k=4\nLast")
-plot_population_chromosome('results/howe1_k4_30_seed/first_population_chromosomes.csv', "30 Seed Avg Howe1 k=4\nFirst")
-plot_population_edge_options('results/howe1_k4_30_seed/last_population_num_edges.csv', "30 Seed Avg Howe1 k=4\nLast")
-plot_population_edge_options('results/howe1_k4_30_seed/first_population_num_edges.csv', "30 Seed Avg Howe1 k=4\nFirst")
+folder = 'results/gdb8_k2_30_seed/'
+plot_population_chromosome(folder, 'last_population_chromosomes.csv', "30 Seed Avg gdb8 k=2\nLast", "last_gen_gdb8_k2_chromosome")
+plot_population_chromosome(folder, 'first_population_chromosomes.csv', "30 Seed Avg gdb8 k=2\nFirst", "first_gen_gdb8_k2_chromosome")
+plot_population_edge_options(folder, 'last_population_num_edges.csv', "30 Seed Avg gdb8 k=2\nLast", "last_gen_gdb8_k2_edge_options")
+plot_population_edge_options(folder, 'first_population_num_edges.csv', "30 Seed Avg gdb8 k=2\nFirst", "first_gen_gdb8_k2_edge_options")

@@ -72,7 +72,7 @@ class Population(object):
 
 	def scaleFitnessLinearly(self, start: int, end: int):
 		Copies = 1.2 # any desired value 1.2 has worked well
-		scaleUp = 1000
+		scaleUp = 1000000
 		fmin = self.fitStats.min * scaleUp
 		fmax = self.fitStats.max * scaleUp
 		fave = self.fitStats.mean() * scaleUp
