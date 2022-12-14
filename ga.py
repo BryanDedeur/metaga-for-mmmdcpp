@@ -16,7 +16,7 @@ from timeit import default_timer as timer
 from multiprocessing import Process, Pool, Queue, TimeoutError, process
 
 class GA:
-	def __init__(self, evaler, visualize):
+	def __init__(self, evaler, visualize = False):
 		self.version = 3.0
 		self.options = options.Options()
 
@@ -65,11 +65,11 @@ class GA:
 		self.objLines = []
 		self.timeLines = []
 
-		# self.visualize = visualize
-		# self.createVisuals()
-		# if visualize:
-		# 	plt.ion()
-		# 	self.show()
+		if visualize:
+			self.visualize = visualize
+			self.createVisuals()
+			plt.ion()
+			self.show()
 
 		# parallelization
 		self.processEvaluators = []
