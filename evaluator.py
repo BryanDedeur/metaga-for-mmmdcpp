@@ -131,7 +131,7 @@ class Evaluator:
 			return True
 		return False
 
-	def evaluate(self, encodedData, stringId = -1):
+	def evaluate(self, encodedData):
 		# start a timer
 		self.count += 1
 		start = timer()
@@ -149,14 +149,10 @@ class Evaluator:
 			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
-		# statistics
-		#self.routerStats.addValue(self.router.getLengthOfLongestTour())
-		#print('Average eval time: ' + str(self.timeStats.mean()))
-			#print(self.router.getLengthOfLongestTour())
-
-		endTime = timer() - start
-		self.timeStats.addValue(endTime)
+		# end time track stats
+		time_elapsed = timer() - start
+		self.timeStats.addValue(time_elapsed)
 		self.storeIfBest(self.router, encodedData, decoding, self.count)
 
-		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), endTime, stringId
+		return 1/self.router.getLengthOfLongestTour(), self.router.getLengthOfLongestTour(), time_elapsed, self.router.data_str()
 

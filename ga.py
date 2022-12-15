@@ -65,8 +65,8 @@ class GA:
 		self.objLines = []
 		self.timeLines = []
 
-		if visualize:
-			self.visualize = visualize
+		self.visualize = visualize
+		if self.visualize:
 			self.createVisuals()
 			plt.ion()
 			self.show()
@@ -181,17 +181,21 @@ class GA:
 		# set the seed
 		self.setSeed(seed)
 		start = timer()
-		# console output run status
+		# output to console run information
 		print(str(self.runCount + 1) + '. GA evolving on seed (' + str(self.seed) + '): [', end = '')
 		bestSeedObj = float('inf')
+		f = open("test_results.csv", "a")
 		for	gen in range(self.options.maxGen):
 			if gen == 0:
 				# randomize population with whatever seed is set
-				self.population.randomize(0, self.population.sizeParents())
+				self.population.randomize(0, self.population.size_parents())
 			else:
 				# regenerate new population
-				self.population.generate()
+				self.population.regenerate()
 
+			f.write(self.population.data_str(str(seed) + ',' + str(gen) + ','))
+
+			# ouput to console the status
 			if (gen % int(self.options.maxGen * 0.05) == 0):
 				print('.', end = '')
 			
@@ -204,11 +208,15 @@ class GA:
 			if self.population.bestIndividual.objective < bestSeedObj:
 				bestSeedObj = self.population.bestIndividual.objective
 
+		f.close()
+
 		self.seedBestObjStats.addValue(bestSeedObj)
 		self.seedTimeStats.addValue(timer()-start)
-		# console output end of run
-		print('] in ' + str(round(timer()-start,3)) + 's')
+
 		self.runCount += 1
+
+		# ouput to console timing information
+		print('] in ' + str(round(timer()-start,3)) + 's')
 
 	def createVisuals(self):
 		self.figure, self.axes  = plt.subplots(3)

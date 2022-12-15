@@ -37,17 +37,19 @@ def main():
 
     # run for all values of k
     for k in args.k_values:
+        print('Configuring evaluator for k=' + str(k) + ' tours')
+
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k)
         evalor.depotNode = 0
 
         # create the genetic algorithm with the evaluator
-        visualize_ga = True
+        visualize_ga = False
         meta_ga = ga.GA(evalor, visualize_ga)
         meta_ga.init()
 
         # for every seed run the GA
-        print('Running MetaGA with k=' + str(k))
+        print('Running MetaGA on ' + str(len(args.seeds)) + ' seeds:')
         for seed in args.seeds:
             meta_ga.run(seed)
             evalor.save('results/eval_results.txt')

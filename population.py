@@ -25,28 +25,24 @@ class Population(object):
 
 		self.sumScaledFitness = 0
 
+	def data_str(self, prefix = ''):
+		pop_str = ''
+		for i in range(self.size_parents()):
+			pop_str += prefix + str(i) + ',' + self.individuals[i].data_str() + '\n'
+		return pop_str
 
-	# allocates memory for the population
 	def init(self):
+		"""Allocates memory for the population"""
 		self.individuals = [] 
 		# initialize population with randomly generated Individuals
 		for i in range(self.options.populationSize * self.options.chcLambda):
 			self.individuals.append(Individual(self))
 			self.individuals[i].init()
 
-		# # for parallelization create a evaluator per core
-		# parallelize = True
-		# if parallelize:
-		# 	for c in range(os.cpu_count()):
-		# 		argsSet = (evaluator.Evaluator(self.eval.graph, self.eval.numTours), self.ga.evaluationQueue, self.ga.resultQueue)
-		# 		process = Process(target=self.ga.listenForEvaluationRequests, args=argsSet)
-		# 		self.ga.processEvaluators.append(process) 
-		# 		process.start()
-
 	def size(self):
 		return len(self.individuals)
 	
-	def sizeParents(self):
+	def size_parents(self):
 		return int(self.size() / 2)
 
 	def setSeed(self, seed):
@@ -266,19 +262,19 @@ class Population(object):
 			self.ga.evaluationQueue.put("HI from " + str(i))
 		self.ga.evaluationQueue.put("DONE")
 
-	def generate(self):
+	def regenerate(self):
 		# scale parent and child population
 		if self.ga.options.linearFitnessScaling:
-			self.scaleFitnessLinearly(0, self.sizeParents())
+			self.scaleFitnessLinearly(0, self.size_parents())
 
 		# generate new population
-		for i in range(0, self.sizeParents(), 2):
+		for i in range(0, self.size_parents(), 2):
 			# select two individuals
-			parents = self.selectPair(0, self.sizeParents(), self.ga.options.linearFitnessScaling)
+			parents = self.selectPair(0, self.size_parents(), self.ga.options.linearFitnessScaling)
 
 			# get ancestors to replace
-			a1 = self.individuals[i + self.sizeParents()]
-			a2 = self.individuals[i + self.sizeParents() + 1]
+			a1 = self.individuals[i + self.size_parents()]
+			a2 = self.individuals[i + self.size_parents() + 1]
 
 			# crossover two individuals to produce children in ancestor slots
 			children = self.crossoverPair(parents[0], parents[1], a1, a2)
@@ -289,9 +285,9 @@ class Population(object):
 			# evaluate two new children
 			self.evaluatePair(children[0], children[1])
 
-		#self.evaluateInParallel(self.sizeParents(), self.size())
+		#self.evaluateInParallel(self.size_parents(), self.size())
 
-		for i in range(self.sizeParents(), self.size()):
+		for i in range(self.size_parents(), self.size()):
 			# add children statistics
 			self.addIndividualStatistics(children[0])
 			self.addIndividualStatistics(children[1])
@@ -303,5 +299,5 @@ class Population(object):
 
 		# recompute statistics only considering new parent population
 		self.resetStatistics()
-		for i in range(0, self.sizeParents()):
+		for i in range(0, self.size_parents()):
 			self.addIndividualStatistics(self.individuals[i])

@@ -56,6 +56,12 @@ class Router:
 		self.heuristicSelectionCounter = []
 		for h in range(len(self.heuristics)):
 			self.heuristicSelectionCounter.append(0)
+
+	def data_str(self):
+		string = ''
+		for tour in self.tours:
+			string += tour.data_str() + ','
+		return string
 	
 	def size(self):
 		return len(self.tours)

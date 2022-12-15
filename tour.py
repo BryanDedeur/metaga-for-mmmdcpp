@@ -76,6 +76,15 @@ class Tour:
             return False
         return True
 
+    def data_str(self):
+        string = '{'
+        for i in range(len(self.vertexSequence)):
+            string += str(self.vertexSequence[i])
+            if (i < len(self.vertexSequence) - 1):
+                string += ','
+        string += '}'
+        return string
+
     def to_string(self, delimiter = " ", ending = '\n'):
         out = "t(" + str(self.cost) + ") : v["
         for i in range(len(self.vertexSequence)):

@@ -10,14 +10,30 @@ class Individual:
 		self.chromosome = []
 		self.chromosomeLength = self.eval.chromeLength
 
+		self.solution = ''
+
 		self.fitness = 0
 		self.objective = 0
 		self.evalTime = 0
 
 		self.scaledFitness = 0
 	
-	# allocates memory for the individual
+	def __str__(self):
+		"""Returns chromosome as string"""
+		chrom_str = ''
+		for i in self.chromosome:
+			chrom_str += str(i)
+		return chrom_str
+
+	def data_str(self, prefix = '', precision = 6):
+		"""Returns fitness, objective, and evaluation time as a string
+		@param prefix text to add before the string
+		@param precision number of decimal places
+		"""
+		return prefix + str(round(self.fitness, precision)) + ',' + str(self.objective) + ',' + str(round(self.evalTime, precision)) + ',' + str(self) + ',' + self.solution
+	
 	def init(self):
+		# allocate memory for the individual
 		for i in range(self.chromosomeLength):
 			self.chromosome.append(0)
 
@@ -28,18 +44,15 @@ class Individual:
 		self.chromosome = self.eval.getRandomString()
 		self.evaluate()
 
-	def evaluate(self, evaluator=None, id=-1):
-		# if we are parallelizing the individual might need a specific evaluator on a seperate core
-		result = None
-		if evaluator == None:
-			result = self.eval.evaluate(self.chromosome)
-		else:
-			result = evaluator.evaluate(self.chromosome, id)
+	def evaluate(self):
+		# run the evaluation using the evalution obj
+		result = self.eval.evaluate(self.chromosome)
 
 		# assign the results to the individual
 		self.fitness = result[0]
 		self.objective = result[1]
 		self.evalTime = result[2]
+		self.solution = result[3]
 		return result
 
 	def swap(self, p1, p2):
