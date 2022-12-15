@@ -1,3 +1,5 @@
+import argparse
+
 import ga
 import evaluator
 import graph
@@ -9,37 +11,32 @@ from os import listdir
 from os import path
 from os.path import isfile, join
 
+def parse_args():
+    # capture the args with the parser
+    parser = argparse.ArgumentParser(description=None)
+    parser.add_argument('-i', '--inst', dest='instance', type=str, required=True, help='path to problem instance')
+    parser.add_argument('-k', dest='k_values', type=str, required=True, help='k number of tours')
+    parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga')
+    args = parser.parse_args()
+    # check and adjust the parsed args
+    args.instance = args.instance.replace(' ', '')
+    if not path.exists(args.instance):
+        sys.exit("Cannot find instance: " + args.instance)
+    args.k_values = [int(i) for i in args.k_values.split(',')]
+    args.seeds = [int(i) for i in args.seeds.split(',')]
+    return args
+
 def main():
-    # capture the arguements
-    args = sys.argv
+    # capturing the arguements
+    args = parse_args()
     
-    # read the arguments
-    problemInstancePath = ""
-    kValues = []
-    seeds = []
-
-    if len(args) > 1:
-        problemInstancePath = args[1]
-        if len(args) > 2:
-            kValueString = args[2]
-            tokens = kValueString.split(",")
-            kValues = [int(i) for i in tokens]
-            if len(args) > 3:
-                seedsString = args[3]
-                tokens = seedsString.split(",")
-                seeds = [int(i) for i in tokens]
-
-    if not path.exists(problemInstancePath):
-        print("Cannot find problem instance with path: ", problemInstancePath)
-        sys.exit()
-
     # create the graph
-    gph = graph.Graph(problemInstancePath)
+    gph = graph.Graph(args.instance)
     gph.solve_and_cache_shortest_paths()
     # gph.View(False)
 
     # run for all values of k
-    for k in kValues:
+    for k in args.k_values:
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k)
         evalor.depotNode = 0
@@ -51,7 +48,7 @@ def main():
 
         # for every seed run the GA
         print('Running MetaGA with k=' + str(k))
-        for seed in seeds:
+        for seed in args.seeds:
             meta_ga.run(seed)
             evalor.save('results/eval_results.txt')
             # evalor.router.View()
