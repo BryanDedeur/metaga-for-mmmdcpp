@@ -2,9 +2,7 @@
 
 ## Getting Started
 
-### Env Setup
-
-#### Including Instances
+### Including Instances
 
 TODO
 

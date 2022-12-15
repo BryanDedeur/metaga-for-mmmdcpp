@@ -14,9 +14,10 @@ from os.path import isfile, join
 def parse_args():
     # capture the args with the parser
     parser = argparse.ArgumentParser(description=None)
-    parser.add_argument('-i', '--inst', dest='instance', type=str, required=True, help='path to problem instance')
-    parser.add_argument('-k', dest='k_values', type=str, required=True, help='k number of tours')
-    parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga')
+    parser.add_argument('-i', '--inst', dest='instance', type=str, required=True, help='filepath to problem instance')
+    parser.add_argument('-k', '--tours', dest='k_values', type=str, required=True, help='k number of tours. ex: -k 2,4,8')
+    parser.add_argument('-md', '--multi_depot', dest='multi_depot_routing', type=bool, default=False, required=False, help='build tours using multiple depots')
+    parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga. ex: -s 1234,3949')
     args = parser.parse_args()
     # check and adjust the parsed args
     args.instance = args.instance.replace(' ', '')
