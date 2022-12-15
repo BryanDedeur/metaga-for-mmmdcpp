@@ -35,7 +35,7 @@ def main():
 
     # create the graph
     gph = graph.Graph(problemInstancePath)
-    gph.SolveAndCacheShortestPaths()
+    gph.solve_and_cache_shortest_paths()
     # gph.View(False)
 
     # run for all values of k

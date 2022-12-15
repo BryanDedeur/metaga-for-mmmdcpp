@@ -30,7 +30,7 @@ class Evaluator:
 
 		# encoding
 		self.geneLength = round(math.sqrt(len(self.router.heuristics))) # num bits (1 bits = 2 heuristics) (2 bits = 4 heursitics) (3 bits = 8 heuristics)
-		self.chromeLength = self.graph.SizeE() * self.geneLength
+		self.chromeLength = self.graph.size_e() * self.geneLength
 
 		self.minAllele = 0
 		self.maxAllele = 3
@@ -48,7 +48,7 @@ class Evaluator:
 	def to_string(self, delimiter = ",", ending = '\n'):
 		data = [
 			self.GetProblemName(),
-			self.graph.SizeE(),
+			self.graph.size_e(),
 			self.numTours,
 			self.seed,
 			self.bestObjective,
@@ -140,13 +140,13 @@ class Evaluator:
 
 		self.router.clear()
 		for k_i in range(self.numTours):
-			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
+			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		self.router.processHeuristicSequence(decoding)
 
 		for k_i in range(self.numTours):
-			k_depot = self.graph.SizeV() - (k_i - (math.floor(k_i/4)*4)) - 1
+			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		# statistics

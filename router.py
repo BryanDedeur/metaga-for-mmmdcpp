@@ -12,7 +12,7 @@ class Router:
 	def __init__(self, gph, numTours):
 		self.graph = gph
 		self.tours = []
-		self.nearestEdgesSetSize = self.graph.SizeE()
+		self.nearestEdgesSetSize = self.graph.size_e()
 		self.seed = 0
 
 		for i in range(numTours):
@@ -92,7 +92,7 @@ class Router:
 
 	def ViewOverlap(self, ax):
 		edgeVisits = []
-		for e in range(self.graph.SizeE()):
+		for e in range(self.graph.size_e()):
 			edgeVisits.append(0)
 		for tour in self.tours:
 			for e in tour.edgeSequence:
@@ -105,8 +105,8 @@ class Router:
 		maxCount = max(edgeVisits)
 		minColor = 'dodgerblue'
 		maxColor = 'red'
-		for e in range(self.graph.SizeE()):
-			vpair = self.graph.GetEdgeVertices(e)
+		for e in range(self.graph.size_e()):
+			vpair = self.graph.get_edge_vertices(e)
 			x = (self.graph.vertices[vpair[0]][0], self.graph.vertices[vpair[1]][0])
 			y = (self.graph.vertices[vpair[0]][1], self.graph.vertices[vpair[1]][1])
 			ax.plot(x, y, color=self.colorFader(minColor,maxColor,(edgeVisits[e] - 1)/(maxCount - minCount)), linewidth=2 * edgeVisits[e])
@@ -164,7 +164,7 @@ class Router:
 			self.tours[i].clear()
 		self.unvisitedEdges.clear()
 		self.visitedEdges.clear()
-		for i in range(self.graph.SizeE()):
+		for i in range(self.graph.size_e()):
 			self.unvisitedEdges.append(i)
 
 	def processHeuristicSequence(self, sequence):
@@ -220,11 +220,11 @@ class Router:
 				else:
 					break 
 		def getLengthOfEdge(edgeId):
-			return self.graph.GetEdgeCost(edgeId)
+			return self.graph.get_edge_cost(edgeId)
 		if sort:
 			setOfEdges.sort(key=getLengthOfEdge)
 		# for e in setOfEdges:
-		# 	print(self.graph.GetEdgeCost(e))
+		# 	print(self.graph.get_edge_cost(e))
 		return setOfEdges
 
 	# ============================================== HEURISTICS FOR EDGE FINDING ================================================================= #
@@ -233,18 +233,18 @@ class Router:
 		lowestEdge = -1
 		lowestEdgeValue = float('inf')
 		for e in self.unvisitedEdges:
-			if self.graph.GetEdgeCost(e) < lowestEdgeValue:
+			if self.graph.get_edge_cost(e) < lowestEdgeValue:
 				lowestEdge = e
-				lowestEdgeValue = self.graph.GetEdgeCost(e)
+				lowestEdgeValue = self.graph.get_edge_cost(e)
 		return lowestEdge
 	
 	def findHighestCostUnvisitedEdge(self):
 		lowestEdge = -1
 		lowestEdgeValue = 0
 		for e in self.getUnvisitedEdges():
-			if self.graph.GetEdgeCost(e) > lowestEdgeValue:
+			if self.graph.get_edge_cost(e) > lowestEdgeValue:
 				lowestEdge = e
-				lowestEdgeValue = self.graph.GetEdgeCost(e)
+				lowestEdgeValue = self.graph.get_edge_cost(e)
 		return lowestEdge
 	
 	# def findRandomUnvisitedEdge(self):
@@ -385,7 +385,7 @@ class Router:
 	def getShortestToursToAllUnvisitedEdgesFromVertex(self, vertex, sortTours = True):
 		tempToursToEdges = []
 		for e in self.getUnvisitedEdges():
-			tempToursToEdges.append((self.graph.GetShortestTourBetweenVertexAndEdge(vertex, e), e))
+			tempToursToEdges.append((self.graph.get_shortest_tour_between_vertex_and_edge(vertex, e), e))
 		def getTourLengthFromPair(tourEdgePair):
 			return tourEdgePair[0].cost
 		if sortTours:
@@ -395,7 +395,7 @@ class Router:
 	def getShortestToursToEdgesFromVertex(self, edges, vertex, sortTours = True):
 		tempToursToEdges = []
 		for e in edges:
-			tempToursToEdges.append((self.graph.GetShortestTourBetweenVertexAndEdge(vertex, e), e))
+			tempToursToEdges.append((self.graph.get_shortest_tour_between_vertex_and_edge(vertex, e), e))
 		def getTourLengthFromPair(tourEdgePair):
 			return tourEdgePair[0].cost
 		if sortTours:

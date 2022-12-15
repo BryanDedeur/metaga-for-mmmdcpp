@@ -30,11 +30,11 @@ class Graph:
             directory = nameWithoutExtension.split(self.name)[0]
             extension = split_tup[1]
             if extension == '.csv':
-                self.LoadCSVFile(filepath)
+                self.load_csv(filepath)
             elif extension == '.json':
-                self.LoadJSONFile(filepath)
+                self.load_json(filepath)
             elif extension == '.dat':
-                self.LoadDATFile(filepath)
+                self.load_dat(filepath)
             
             if len(self.vertices) < len(self.adjacencyMatrix):
                 # check for obj file
@@ -45,11 +45,11 @@ class Graph:
                     self.createVertexPositions()
 
     def createVertexPositions(self):
-        theta_distribution = np.linspace(0, 2 * np.pi, self.SizeV() + 1)
+        theta_distribution = np.linspace(0, 2 * np.pi, self.size_v() + 1)
         radius = 1
         a = radius * np.cos(theta_distribution)
         b = radius * np.sin(theta_distribution)
-        for v in range(self.SizeV()):
+        for v in range(self.size_v()):
             self.vertices.append((a[v], b[v]))
         return
 
@@ -92,13 +92,13 @@ class Graph:
                 ax.annotate(str(v), xy ,ha='center',va='center', color = "white",size = 6,
                             bbox=dict(boxstyle="circle,pad=0.2", fc="teal", ec="b", lw=0))
     
-    def View(self, blocking):
+    def view(self, blocking):
         fig, ax = plt.subplots(1, figsize=(4, 4))
         ax.title.set_text('graph ' + self.name)
         self.plot(ax, True, True)
         plt.show(block = blocking)
 
-    def LoadCSVFile(self, file):
+    def load_csv(self, file):
         print("Loading graph: " + file)
         file = open(file, 'r')
         lines = file.readlines()
@@ -109,11 +109,10 @@ class Graph:
             for c in range(r, len(cols)):
                 edgeCost = float(cols[c])
                 if edgeCost > 0:
-                    self.AddEdge(r, c, edgeCost)
+                    self.add_edge(r, c, edgeCost)
                     count += 1
-        return
 
-    def LoadDATFile(self, file):
+    def load_dat(self, file):
         print("Loading graph: " + file)
         file = open(file, 'r')
         lines = file.readlines()
@@ -129,10 +128,9 @@ class Graph:
                 except ValueError:
                     pass
             if len(numbers) >= 3:
-                self.AddEdge(int(numbers[0] - 1), int(numbers[1] - 1), numbers[2])
-        return
+                self.add_edge(int(numbers[0] - 1), int(numbers[1] - 1), numbers[2])
 
-    def LoadJSONFile(self, file):
+    def load_json(self, file):
         print("Loading graph: " + file)
         file = open(file, 'r')
         data = json.load(file)
@@ -144,39 +142,38 @@ class Graph:
             v1 = data[edgesKey][e][vertexKey][0]
             v2 = data[edgesKey][e][vertexKey][1]
             cost = float(data[edgesKey][e]['length'])
-            self.AddEdge(v1, v2, cost)
+            self.add_edge(v1, v2, cost)
 
         # load vertice positions
         for v in range(len(data['vertices'])):
             coord = data['vertices'][v]['v2Pos']
             self.vertices.append((coord[0], 10 - coord[1]))
-        return
     
-    def Clear(self):
+    def clear(self):
         self.adjacencyMatrix.clear()
         self.edgeMatrix.clear()
         self.edgeIds.clear()
         self.cachedDijkstras.clear()
         self.connectedEdges.clear()
 
-    def SizeV(self):
+    def size_v(self):
         return len(self.adjacencyMatrix)
 
-    def SizeE(self):
+    def size_e(self):
         return len(self.edgeIds)
     
-    def SumE(self):
+    def sum_e(self):
         sum = 0
         for e in self.edgeIds:
-            sum += self.GetEdgeCost(e)
+            sum += self.get_edge_cost(e)
         return sum
 
     def to_string(self, delimiter = ',', ending = '\n'):
         data = [
             self.name(),
-            self.SizeE(),
-            self.SizeV(),
-            self.SumE()
+            self.size_e(),
+            self.size_v(),
+            self.sum_e()
         ]
         formatted = ''
         for i in range(len(data)):
@@ -193,12 +190,12 @@ class Graph:
         f.close()
 
     # Fixes the adjacency matrix dimenions if not the right size for the vertex id.
-    def FixDimensions(self, newLim):
+    def fix_dimensions(self, newLim):
         # Zero base indexing means we need to increase the counts to 1+ newLim
         newLim += 1
         # Extend the size of the matrix to match the new limit
-        i = self.SizeV() - 1
-        while (self.SizeV() < newLim):
+        i = self.size_v() - 1
+        while (self.size_v() < newLim):
             i += 1
             self.adjacencyMatrix.append([])
             self.cachedDijkstras.append([])
@@ -211,14 +208,14 @@ class Graph:
                 self.edgeMatrix[i].append(-1)
 
 
-    def IsValidEdge(self, v1,  v2):
+    def is_valid_edge(self, v1,  v2):
         if (self.edgeMatrix[v1][v2] > -1):
             return True
         # Invalid edge
         #pr("Trying to access edge between vertices (" + v1.ToString() + " " + v2.ToString() + ") which is not valid.")
         return False
 
-    def GetEdgeVertices(self, id):
+    def get_edge_vertices(self, id):
         return self.edgeIds[id]
         # for r in range(len(self.edgeMatrix)):
         #     for c in range(len(self.edgeMatrix)):        
@@ -228,54 +225,54 @@ class Graph:
         # print("Edge id:" + str(id) + " does not exist, but trying to access it.")
         # return (-1,-1)
 
-    def GetEdge(self, v1,  v2):
-        if (not self.IsValidEdge(v1, v2)):
+    def get_edge(self, v1,  v2):
+        if (not self.is_valid_edge(v1, v2)):
             return -1
         return self.edgeMatrix[v1][v2]
 
-    def GetEdgeCostFromVertices(self, v1,  v2):
+    def get_edge_cost_from_vertices(self, v1,  v2):
         return self.adjacencyMatrix[v1][v2]
     
-    def GetEdgeCost(self, id):
-        vertices = self.GetEdgeVertices(id)
-        return self.GetEdgeCostFromVertices(vertices[0], vertices[1])
+    def get_edge_cost(self, id):
+        vertices = self.get_edge_vertices(id)
+        return self.get_edge_cost_from_vertices(vertices[0], vertices[1])
 
-    def GetOppositeVertexOnEdge(self, vertex,  edge):
-        vertices = self.GetEdgeVertices(edge)
+    def get_opposite_vertex_on_edge(self, vertex,  edge):
+        vertices = self.get_edge_vertices(edge)
         if (vertices[0] == vertex):
             return vertices[1]
         return vertices[0]
     
-    def GetShortestTourBetweenVertices(self, startVertex,  endVertex):
+    def get_shortest_tour_between_vertices(self, startVertex,  endVertex):
         # pr(startVertex.ToString() + endVertex.ToString())
         tour = self.cachedDijkstras[startVertex][endVertex]
         if (tour == None):
             tour = self.cachedDijkstras[endVertex][startVertex]
         return tour
     
-    def GetShortestTourBetweenVertexAndEdge(self, vertex,  edge):
-        evs = self.GetEdgeVertices(edge)
-        tour = self.GetShortestTourBetweenVertices(vertex, evs[0])
+    def get_shortest_tour_between_vertex_and_edge(self, vertex,  edge):
+        evs = self.get_edge_vertices(edge)
+        tour = self.get_shortest_tour_between_vertices(vertex, evs[0])
         bestTour = tour
         if (tour.cost < bestTour.cost):
             bestTour = tour
-        tour = self.GetShortestTourBetweenVertices(vertex, evs[1])
+        tour = self.get_shortest_tour_between_vertices(vertex, evs[1])
         if (tour.cost < bestTour.cost):
             bestTour = tour
         return bestTour
 
-    def GetShortestTourBetweenEdges(self, edge1,  edge2):
-        e1vs = self.GetEdgeVertices(edge1)
-        tour1 = self.GetShortestTourBetweenVertexAndEdge(e1vs[0], edge2)
-        tour2 = self.GetShortestTourBetweenVertexAndEdge(e1vs[1], edge2)
+    def get_shortest_tour_between_edges(self, edge1,  edge2):
+        e1vs = self.get_edge_vertices(edge1)
+        tour1 = self.get_shortest_tour_between_vertex_and_edge(e1vs[0], edge2)
+        tour2 = self.get_shortest_tour_between_vertex_and_edge(e1vs[1], edge2)
         if (tour1.cost < tour2.cost):
             return tour1
         return tour2
     
     # returns the vertex inbetween two edges
-    def GetEdgesConnectingVertex(self, edge1,  edge2):
-        vertices1 = self.GetEdgeVertices(edge1)
-        vertices2 = self.GetEdgeVertices(edge2)
+    def get_edges_connection_vertex(self, edge1,  edge2):
+        vertices1 = self.get_edge_vertices(edge1)
+        vertices2 = self.get_edge_vertices(edge2)
         if (vertices1[0] == vertices2[0]):
             return vertices1[0]
         elif (vertices1[0] == vertices2[1]):
@@ -286,23 +283,23 @@ class Graph:
             return vertices1[1]
         return -1
 
-    def GetSetOfEdgesConnectedToVertex(self, vertexId):
+    def get_set_of_edges_connected_to_vertex(self, vertexId):
         return self.connectedEdges[vertexId]
 
-    def GetEdgeDegreeAtVertex(self, vertexId):
-        return len(self.GetSetOfEdgesConnectedToVertex(vertexId))
+    def get_edge_degree_at_vertex(self, vertexId):
+        return len(self.get_set_of_edges_connected_to_vertex(vertexId))
 
-    def AddVertex(self, vId):
+    def add_vertex(self, vId):
         # Make sure the adjacency matrix is the right size
-        self.FixDimensions(vId)
+        self.fix_dimensions(vId)
         # all we need to do is make sure the adjacency matrix is the right size
 
     # Add a new edge to the adjacency matrix
-    def AddEdge(self, v1,  v2,  cost):
-        id = self.SizeE()
+    def add_edge(self, v1,  v2,  cost):
+        id = self.size_e()
         # Add vertices regarless if they exist because add vertex will resolve that
-        self.AddVertex(v1)
-        self.AddVertex(v2)
+        self.add_vertex(v1)
+        self.add_vertex(v2)
         # make sure edge does not already exist
         if (self.edgeMatrix[v1][v2] == -1):
             self.edgeIds.append((v1, v2))
@@ -311,30 +308,30 @@ class Graph:
             self.edgeMatrix[v1][v2] = id
             self.edgeMatrix[v2][v1] = id
         
-    def minDistance(self, dist, spSet):
+    def min_distance(self, dist, spSet):
         best = (-1, float('inf'))
-        for v in range(self.SizeV()):
+        for v in range(self.size_v()):
             if (not spSet[v] and dist[v] <= best[1]):
                 best = (v, dist[v])
         if (best[0] == -1):
             print("No better min distance found, so returning an invalid vertex.")
         return best[0]
 
-    def Dijkstras(self, src):
+    def dijkstras(self, src):
         # initialization
         dist = []
         spSet = [] 
-        for i in range(self.SizeV()):
+        for i in range(self.size_v()):
             dist.append(float('inf'))
             spSet.append(False)
             self.cachedDijkstras[src][i].AddVertex(src)
         dist[src] = 0
 
         # Find shortest paths
-        for count in range(self.SizeV() - 1):
-            u = self.minDistance(dist, spSet)
+        for count in range(self.size_v() - 1):
+            u = self.min_distance(dist, spSet)
             spSet[u] = True
-            for v in range(self.SizeV()):
+            for v in range(self.size_v()):
                 if not spSet[v] and self.adjacencyMatrix[u][v] > 0 and not dist[u] == float('inf') and dist[u] + self.adjacencyMatrix[u][v] < dist[v]:
                     dist[v] = dist[u] + self.adjacencyMatrix[u][v]
                     # A better tour was found, clear the existing tour
@@ -344,14 +341,14 @@ class Graph:
                         self.cachedDijkstras[src][v].InsertVertex(self.cachedDijkstras[src][u].vertexSequence[i])
                     self.cachedDijkstras[src][v].InsertVertex(v)
                 
-    def SolveAndCacheShortestPaths(self):
+    def solve_and_cache_shortest_paths(self):
         # Solve dijkstras
-        for v in range(self.SizeV()):
-            self.Dijkstras(v)
+        for v in range(self.size_v()):
+            self.dijkstras(v)
             # Store connected edges
             edges = []
-            for e in range(self.SizeE()):
-                vertices = self.GetEdgeVertices(e)
+            for e in range(self.size_e()):
+                vertices = self.get_edge_vertices(e)
                 if vertices[0] == v or vertices[1] == v:
                     edges.append(e)
             self.connectedEdges.append(edges)
