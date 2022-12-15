@@ -9,40 +9,36 @@ from typing import Sized
 from tour import Tour
 
 class Graph:
-    def __init__(self, filepath = ''):
-        self.name = ''
-        self.fileName = ''
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.name = os.path.splitext(self.filename)[0]
+
         self.adjacencyMatrix = [] # [][] of edge costs
         self.edgeMatrix = [] # [][] of adjacency matrix with edge ID's instead of costs
         self.edgeIds = [] # (v1, v2)
         self.vertices = [] # (x coordiante, y coordinate)
         self.connectedEdges = [] # [vertex id] = [edges]
         self.cachedDijkstras = [] #[][] of tours
-        self.filepath = filepath
-
-        if (filepath):
-            split_tup = os.path.splitext(filepath)
-            nameWithoutExtension = split_tup[0]
-            self.fileName = nameWithoutExtension.split('/')[len(nameWithoutExtension.split('/')) - 1]
-            splitName = self.fileName.lower().split('-')
-            for st in splitName:
-                self.name += st + ' '
-            directory = nameWithoutExtension.split(self.name)[0]
-            extension = split_tup[1]
-            if extension == '.csv':
-                self.load_csv(filepath)
-            elif extension == '.json':
-                self.load_json(filepath)
-            elif extension == '.dat':
-                self.load_dat(filepath)
-            
-            if len(self.vertices) < len(self.adjacencyMatrix):
-                # check for obj file
-                objpath = directory + '.obj'
-                if (os.path.exists(objpath)):
-                    self.loadVertices(objpath)
-                else:
-                    self.createVertexPositions()
+        
+        print('Loading graph ' + self.filename + '...', end='')
+        extension = os.path.splitext(self.filename)[1]
+        if extension == '.csv':
+            self.load_csv(filepath)
+        elif extension == '.json':
+            self.load_json(filepath)
+        elif extension == '.dat':
+            self.load_dat(filepath)
+        print(' Success! (vertices:' + str(self.size_v()) + ' edges:' + str(self.size_e()) + ')')
+        
+        if len(self.vertices) < len(self.adjacencyMatrix):
+            # check for obj file
+            directory = filepath.replace(self.filename, '')
+            objpath = directory + self.name + '.obj'
+            if (os.path.exists(objpath)):
+                self.loadVertices(objpath)
+            else:
+                self.createVertexPositions()
 
     def createVertexPositions(self):
         theta_distribution = np.linspace(0, 2 * np.pi, self.size_v() + 1)
@@ -54,7 +50,6 @@ class Graph:
         return
 
     def loadVertices(self, path):
-        print("Loading coordinates: " + path)
         file = open(path, 'r')
         lines = file.readlines()
         file.close()
@@ -99,7 +94,6 @@ class Graph:
         plt.show(block = blocking)
 
     def load_csv(self, file):
-        print("Loading graph: " + file)
         file = open(file, 'r')
         lines = file.readlines()
         file.close()
@@ -113,7 +107,6 @@ class Graph:
                     count += 1
 
     def load_dat(self, file):
-        print("Loading graph: " + file)
         file = open(file, 'r')
         lines = file.readlines()
         file.close()
@@ -131,7 +124,6 @@ class Graph:
                 self.add_edge(int(numbers[0] - 1), int(numbers[1] - 1), numbers[2])
 
     def load_json(self, file):
-        print("Loading graph: " + file)
         file = open(file, 'r')
         data = json.load(file)
         file.close()

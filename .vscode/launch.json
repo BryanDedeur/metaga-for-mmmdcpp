@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "main.py",
-            "args": ["benchmarks/gdb/gdb8.dat", "2", "8115, 3520, 8647"],
+            "args": ["-i benchmarks/gdb/gdb8.dat", "-k 2,4,8", "-s 8115, 3520, 8647"],
             "console": "integratedTerminal"
         },
         {
