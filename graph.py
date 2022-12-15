@@ -342,14 +342,15 @@ class Graph:
                     self.cachedDijkstras[src][v].InsertVertex(v)
                 
     def solve_and_cache_shortest_paths(self):
-        # Solve dijkstras
+        """Solves Dijkstras between all pairs of vertices and stores it in the graph obj"""
+        
+        # solve dijkstras
         for v in range(self.size_v()):
             self.dijkstras(v)
-            # Store connected edges
+            # store connected edges
             edges = []
             for e in range(self.size_e()):
                 vertices = self.get_edge_vertices(e)
                 if vertices[0] == v or vertices[1] == v:
                     edges.append(e)
             self.connectedEdges.append(edges)
-        return
