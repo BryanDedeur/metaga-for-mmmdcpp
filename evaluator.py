@@ -141,10 +141,7 @@ class Evaluator:
 
 		# convert the heuristics to tours
 		for h in decoding:
-			# find edge using heuristic
-			shortestTour = self.router.getShortestTour()
-			e = self.heuristics[h](shortestTour, self.router.nearestEdgesSetSize)
-			self.router.addEdgeToTour(e, shortestTour)
+			self.heuristics[h](h)
 
 		# return all tours to their depots
 		for k_i in range(self.numTours):

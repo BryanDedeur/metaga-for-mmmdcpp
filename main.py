@@ -19,7 +19,7 @@ def parse_args():
     parser.add_argument('-k', '--tours', dest='k_values', type=str, required=True, help='k number of tours. ex: -k 2,4,8')
     parser.add_argument('-md', '--multi_depot', dest='multi_depot_routing', type=bool, default=False, required=False, help='build tours using multiple depots')
     parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga. ex: -s 1234,3949')
-    parser.add_argument('-j', '--heuristics', dest='heuristics', type=str, default='MAMR', required=False, help='the set of heuristics (MAMR, RR). ex: -j MAMR')
+    parser.add_argument('-j', '--heuristics', dest='heuristics', type=str, default='MMMR', required=False, help='the set of heuristics (MMMR, RR). ex: -j MMMR')
 
     args = parser.parse_args()
     # check and adjust the parsed args
@@ -39,7 +39,7 @@ def main():
     gph = graph.Graph(args.instance)
     gph.solve_and_cache_shortest_paths()
     # gph.View(False)
-
+    # TODO make sure to handle depots properly
     # run for all values of k
     for k in args.k_values:
         print('Configuring evaluator for k=' + str(k) + ' tours')
@@ -50,18 +50,21 @@ def main():
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k, router)
         evalor.depotNode = 0 # TODO make sure depot node is correct
-        if args.heuristics == 'MAMR':
+        if args.heuristics == 'MMMR':
             evalor.geneLength = 2 # 4 total heuristics
             evalor.chromeLength = gph.size_e() * evalor.geneLength
             evalor.heuristics = [            
-                    router.findLowestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # min cost
-                    router.findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # ave cost 
-                    router.findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # max cost
-                    router.findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges # random cost 
-                ]
+                router.add_edges_to_shortest_tour_with_min_cost_edge_from_nearest_unvisited_equidistant, # min cost
+                router.add_edges_to_shortest_tour_with_mean_cost_edge_from_nearest_unvisited_equidistant, # median cost 
+                router.add_edges_to_shortest_tour_with_mean_cost_edge_from_nearest_unvisited_equidistant, # max cost
+                router.add_edges_to_shortest_tour_with_random_cost_edge_from_nearest_unvisited_equidistant # random cost 
+            ]
         elif args.heuristics == 'RR':
             evalor.geneLength = len(bin(gph.maxVertexDegree)[2:])
             evalor.chromeLength = gph.size_e() * evalor.geneLength
+            evalor.heuristics = [
+                
+            ]
 
         # create the genetic algorithm with the evaluator
         visualize_ga = False
