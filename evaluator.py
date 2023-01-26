@@ -29,8 +29,8 @@ class Evaluator:
 		self.seed = 0000
 
 		# encoding
-		self.geneLength = round(math.sqrt(len(self.router.heuristics))) # num bits (1 bits = 2 heuristics) (2 bits = 4 heursitics) (3 bits = 8 heuristics)
-		self.chromeLength = self.graph.size_e() * self.geneLength
+		self.geneLength = 0
+		self.chromeLength = 0
 
 		self.minAllele = 0
 		self.maxAllele = 3

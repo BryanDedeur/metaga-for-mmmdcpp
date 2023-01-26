@@ -43,6 +43,12 @@ def main():
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k)
         evalor.depotNode = 0
+        if True: # TODO 
+            evalor.geneLength = 2 # the number of heuristics
+            evalor.chromeLength = gph.size_e() * evalor.geneLength
+        else:
+            evalor.geneLength = 2 # the number of heuristics
+            evalor.chromeLength = gph.size_e() * evalor.geneLength
 
         # create the genetic algorithm with the evaluator
         visualize_ga = False
