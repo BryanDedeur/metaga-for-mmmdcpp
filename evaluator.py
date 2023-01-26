@@ -1,20 +1,20 @@
 import individual
 import random
 import statistics
+from router import Router
 import tour
 import copy
 import math
 from timeit import default_timer as timer
 
-from router import Router
 
 class Evaluator:
-	def __init__(self, gph, numTours):
+	def __init__(self, gph, numTours, router):
 		# variables
 		self.version = 3.0
 		self.graph = gph
 		self.numTours = numTours
-		self.router = Router(self.graph, numTours)
+		self.router = router
 		self.depotNode = 0
 		self.routerStats = statistics.Statistics()
 		self.timeStats = statistics.Statistics()
@@ -34,6 +34,8 @@ class Evaluator:
 
 		self.minAllele = 0
 		self.maxAllele = 3
+
+		self.heuristics = []
 	
 	def reset(self):
 		self.routerStats.clear()
@@ -137,8 +139,14 @@ class Evaluator:
 			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
-		self.router.processHeuristicSequence(decoding)
+		# convert the heuristics to tours
+		for h in decoding:
+			# find edge using heuristic
+			shortestTour = self.router.getShortestTour()
+			e = self.heuristics[h](shortestTour, self.router.nearestEdgesSetSize)
+			self.router.addEdgeToTour(e, shortestTour)
 
+		# return all tours to their depots
 		for k_i in range(self.numTours):
 			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])

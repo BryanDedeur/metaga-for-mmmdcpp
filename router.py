@@ -24,39 +24,6 @@ class Router:
 		self.visitedEdges = []
 		self.unvisitedEdges = []
 
-		# self.heuristics = [
-		# 	self.findLowestCostUnvisitedEdge, 
-		# 	self.findHighestCostUnvisitedEdge, 
-		# 	self.findRandomUnvisitedEdge, 
-		# 	self.findRandomUnvisitedEdgeConnectedToVisitedVertices,
-		# 	self.findLowestCostNearestUnvisitedEdge,
-		# 	self.findHighestCostNearestUnvisitedEdge,
-		# 	self.findRandomCostNearestUnvisitedEdge,
-		# 	self.findLowestCostNearestUnvisitedEdge
-		# 	]
-		# self.heuristicEdgeCandidates = 'Set of Equi Distant'
-		# self.heuristicEdgeSelection = 'Min, Mid, Max, Rand'
-
-		self.heuristics = [
-			# same distance unvisited edges
-			self.findLowestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			self.findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges,
-			# until set size of univisted egdes
-			# self.findLowestCostNearestUnvisitedEdge,
-			# self.findMidCostNearestUnvisitedEdge,
-			# self.findRandomCostNearestUnvisitedEdge,
-			# self.findHighestCostNearestUnvisitedEdge
-			# edges of degree
-			#self.findEdgeConnectedToOddDegreeVertexWithinNearestUnivistedEdges
-			#self.findEdgeConnectedToEvenDegreeVertexWithinNearestUnivistedEdges
-			]
-		
-		self.heuristicSelectionCounter = []
-		for h in range(len(self.heuristics)):
-			self.heuristicSelectionCounter.append(0)
-
 	def data_str(self):
 		string = ''
 		for tour in self.tours:
@@ -173,15 +140,6 @@ class Router:
 		for i in range(self.graph.size_e()):
 			self.unvisitedEdges.append(i)
 
-	def processHeuristicSequence(self, sequence):
-		for h in sequence:
-			# increase the counter
-			self.heuristicSelectionCounter[h] += 1
-			# find edge using heuristic
-			shortestTour = self.getShortestTour()
-			e = self.heuristics[h](shortestTour, self.nearestEdgesSetSize)
-			self.addEdgeToTour(e, shortestTour)
-
 	def getUnvisitedEdges(self):
 		return self.unvisitedEdges
 	
@@ -232,8 +190,6 @@ class Router:
 		# for e in setOfEdges:
 		# 	print(self.graph.get_edge_cost(e))
 		return setOfEdges
-
-	# ============================================== HEURISTICS FOR EDGE FINDING ================================================================= #
 
 	def findLowestCostUnvisitedEdge(self):
 		lowestEdge = -1
@@ -366,8 +322,6 @@ class Router:
 	# 	if len(setOfEdges) == 0:
 	# 		return -1
 	# 	return setOfEdges[random.randint(0, len(setOfEdges) - 1)]
-
-	# ============================================== HEURISTICS FOR EDGE FINDING ================================================================= #
 
 	def addVertexToTours(self, vertexId):
 		for tour in self.tours:

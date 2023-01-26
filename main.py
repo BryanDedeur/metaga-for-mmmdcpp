@@ -3,6 +3,7 @@ import argparse
 import ga
 import evaluator
 import graph
+from router import Router
 import sys
 import os
 import math
@@ -43,12 +44,21 @@ def main():
     for k in args.k_values:
         print('Configuring evaluator for k=' + str(k) + ' tours')
 
+        # create a router for constructing tours
+        router = Router(gph, k)
+
         # create the evaluator
-        evalor = evaluator.Evaluator(gph, k)
-        evalor.depotNode = 0
-        if args.heuristics == 'MAMR': # TODO 
+        evalor = evaluator.Evaluator(gph, k, router)
+        evalor.depotNode = 0 # TODO make sure depot node is correct
+        if args.heuristics == 'MAMR':
             evalor.geneLength = 2 # 4 total heuristics
             evalor.chromeLength = gph.size_e() * evalor.geneLength
+            evalor.heuristics = [            
+                    router.findLowestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # min cost
+                    router.findMidCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # ave cost 
+                    router.findHighestCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges, # max cost
+                    router.findRandomCostUnvisitedEdgeFromSetOfNearestSameDistanceEdges # random cost 
+                ]
         elif args.heuristics == 'RR':
             evalor.geneLength = len(bin(gph.maxVertexDegree)[2:])
             evalor.chromeLength = gph.size_e() * evalor.geneLength
