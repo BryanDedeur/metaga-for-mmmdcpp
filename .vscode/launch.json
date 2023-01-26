@@ -17,7 +17,7 @@
             "type": "python",
             "request": "launch",
             "program": "main.py",
-            "args": ["-i bridge-graph-instances/standard/howe/howe1.csv", "-k 2", "-s 8115, 3520, 8647"],
+            "args": ["-i bridge-graph-instances/standard/howe/howe1.csv", "-k 2", "-s 8115, 3520, 8647", "-j RR"],
             "console": "integratedTerminal"
         },
         {
