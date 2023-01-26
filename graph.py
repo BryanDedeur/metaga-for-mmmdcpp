@@ -21,6 +21,8 @@ class Graph:
         self.connectedEdges = [] # [vertex id] = [edges]
         self.cachedDijkstras = [] #[][] of tours
         
+        self.maxVertexDegree = 0
+        
         print('Loading graph ' + self.filename + '...', end='')
         extension = os.path.splitext(self.filename)[1]
         if extension == '.csv':
@@ -280,6 +282,9 @@ class Graph:
 
     def get_edge_degree_at_vertex(self, vertexId):
         return len(self.get_set_of_edges_connected_to_vertex(vertexId))
+    
+    def get_max_vertex_degree(self):
+        return self.maxVertexDegree
 
     def add_vertex(self, vId):
         # Make sure the adjacency matrix is the right size
@@ -339,10 +344,13 @@ class Graph:
         # solve dijkstras
         for v in range(self.size_v()):
             self.dijkstras(v)
-            # store connected edges
+            # store connected edges to vertex
             edges = []
             for e in range(self.size_e()):
                 vertices = self.get_edge_vertices(e)
                 if vertices[0] == v or vertices[1] == v:
                     edges.append(e)
             self.connectedEdges.append(edges)
+            # find the max vertex degree
+            if len(edges) > self.maxVertexDegree:
+                self.maxVertexDegree = len(edges)
