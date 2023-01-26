@@ -87,20 +87,14 @@ class Evaluator:
 		for i in range(self.chromeLength):
 			temp.append(random.randint(0, 1))
 		return temp
-	
-	def binToDec(self, binary):
-		decimal = 0
-		count = 0
-		for i in binary:
-			if i == 1:
-				decimal += pow(2, count)
-			count += 1
-		return decimal
 
 	def decode(self, encoding):
 		decoding = []
 		for i in range(0, len(encoding), self.geneLength):
-			decoding.append(self.binToDec(encoding[i: i + self.geneLength]))
+			decimal = 0
+			for j in range(self.geneLength):
+				decimal = decimal * 2 + encoding[i + j]
+			decoding.append(decimal)
 		return decoding
 
 	def storeIfBest(self, router, encoding, decoding, count):
