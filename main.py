@@ -8,6 +8,7 @@ import sys
 import os
 import math
 import options
+import wandb
 
 from os import listdir
 from os import path
@@ -93,6 +94,56 @@ def main():
                 'p mutation': ga_options.pMut,
             }
         }
+
+        def run_start(seed):
+            wandb.init(project="meta-ga", name=str(seed), group="test1", config=meta_ga.meta_data)
+            return
+
+        def run_end(seed, best_individual, run_time_elapsed):
+            best_individual.evaluate()
+
+            log_info = {
+                'run best objective': best_individual.objective,
+                'run best chromosome': str(best_individual),
+                'run best solution': best_individual.solution,
+                'run best sum tour costs': router.getSumTourLengths()
+            }
+
+            for i in range(len(router.tours)):
+                log_info['run best tour'+str(i) + ' cost'] = router.tours[i].cost
+
+            wandb.log(log_info)
+
+            wandb.finish()
+            return
+
+        def generation_start(seed, gen):
+            return
+
+        def generation_end(seed, gen, best_individual, gen_time_elapsed, run_time_elapsed):
+            # re-evaluate the best indivudal so router has all the right information
+            best_individual.evaluate()
+
+            log_info = {
+                'gen best objective': meta_ga.population.objStats.min,
+                'gen worst objective': meta_ga.population.objStats.max,
+                'gen ave objective': meta_ga.population.objStats.mean(), 
+                'gen duration(s)': gen_time_elapsed,
+                'gen run time(s)': run_time_elapsed,
+                'gen best sum tour costs': router.getSumTourLengths()
+            }
+
+            # for i in range(len(router.tours)):
+            #     log_info['gen best tour'+str(i) + ' cost'] = router.tours[i].cost
+
+            #  log to wandb
+            wandb.log(log_info)
+            return
+
+        meta_ga.on_run_start = run_start
+        meta_ga.on_run_end = run_end
+        meta_ga.on_generation_start = generation_start
+        meta_ga.on_generation_end = generation_end
 
         # for every seed run the GA
         print('Running MetaGA on ' + str(len(args.seeds)) + ' seeds:')

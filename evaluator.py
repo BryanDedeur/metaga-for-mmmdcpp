@@ -136,7 +136,8 @@ class Evaluator:
 
 		self.router.clear()
 		for k_i in range(self.numTours):
-			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
+			#k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
+			k_depot = self.graph.size_v()-1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		# convert the heuristics to tours
@@ -145,7 +146,8 @@ class Evaluator:
 
 		# return all tours to their depots
 		for k_i in range(self.numTours):
-			k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
+			#k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
+			k_depot = self.graph.size_v()-1
 			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
 
 		# end time track stats

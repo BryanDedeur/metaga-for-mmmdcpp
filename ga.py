@@ -9,8 +9,6 @@ import numpy as np
 import statistics
 import os
 
-import wandb
-
 from individual import Individual
 from evaluator import Evaluator
 from population import Population
@@ -22,6 +20,12 @@ class GA:
 		self.options = options
 		self.meta_data = {}
 		self.runCount = 0
+
+		self.on_run_start = None
+		self.on_run_end = None
+
+		self.on_generation_start = None
+		self.on_generation_end = None
 
 		# self.minFitness = float('inf')
 		# self.maxFitness = 0
@@ -178,17 +182,18 @@ class GA:
 		return numSeeds / self.runCount
 	
 	def run(self, seed = 0):
+		self.on_run_start(seed)
+
 		# set the seed
 		self.setSeed(seed)
 		start = timer()
-
-		wandb.init(project="meta-ga", name=str(seed), group="test1", config=self.meta_data)
 
 		# output to console run information
 		print(str(self.runCount + 1) + '. GA evolving on seed (' + str(self.seed) + '): [', end = '')
 		bestSeedObj = float('inf')
 		f = open("test_results.csv", "a")
 		for	gen in range(self.options.maxGen):
+			self.on_generation_start(seed, gen)
 			gen_time_stamp = timer()
 			if gen == 0:
 				# randomize population with whatever seed is set
@@ -212,8 +217,7 @@ class GA:
 			if self.population.bestIndividual.objective < bestSeedObj:
 				bestSeedObj = self.population.bestIndividual.objective
 
-			# upload to wandb the best
-			wandb.log({'best objective': self.population.objStats.min,'worst objective': self.population.objStats.max,'ave objective': self.population.objStats.mean(), 'gen duration(s)': timer()-gen_time_stamp,'ga time(s)': timer()-start})
+			self.on_generation_end(seed, gen, self.population.bestIndividual, timer()-gen_time_stamp, timer()-start)
 
 		f.close()
 
@@ -225,7 +229,7 @@ class GA:
 		# ouput to console timing information
 		print('] in ' + str(round(timer()-start,3)) + 's')
 
-		wandb.finish()
+		self.on_run_end(seed, self.bestIndividual, timer()-start)
 
 	def createVisuals(self):
 		self.figure, self.axes  = plt.subplots(3)
