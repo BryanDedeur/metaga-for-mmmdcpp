@@ -62,9 +62,10 @@ def main():
         elif args.heuristics == 'RR':
             evalor.geneLength = len(bin(gph.maxVertexDegree)[2:])
             evalor.chromeLength = gph.size_e() * evalor.geneLength
-            evalor.heuristics = [
-                
-            ]
+            evalor.heuristics = []
+            # the number of heuristics is dynamically changing based on the problem
+            for i in range(pow(2,evalor.geneLength)): 
+                evalor.heuristics.append(router.add_edges_to_shortest_tour_with_round_robin_nearest_unvisited_equidistant)
 
         # create the genetic algorithm with the evaluator
         visualize_ga = False

@@ -152,7 +152,7 @@ class Router:
 				tempLength = tour.cost
 		return foundTour
 
-	def getShortestTour(self):
+	def get_shortest_tour(self):
 		foundTour = None
 		tempLength = float('inf')
 		for tour in self.tours:
@@ -196,7 +196,7 @@ class Router:
 	# add edges to shortest tour considering min cost from nearest unvisited equidistant set
 	def add_edges_to_shortest_tour_with_min_cost_edge_from_nearest_unvisited_equidistant(self, heuristic_id : int):
 		# find shortest tour last vertex
-		shortest_tour = self.getShortestTour()
+		shortest_tour = self.get_shortest_tour()
 		last_vertex = shortest_tour.vertexSequence[-1]
 		# find set of nearest equidistant edges
 		nearest_equidistant_edges = self.get_set_of_nearest_unvisited_edges(last_vertex)
@@ -211,7 +211,7 @@ class Router:
 	# add edges to shortest tour considering mean cost from nearest unvisited equidistant set
 	def add_edges_to_shortest_tour_with_mean_cost_edge_from_nearest_unvisited_equidistant(self, heuristic_id : int):
 		# find shortest tour last vertex
-		shortest_tour = self.getShortestTour()
+		shortest_tour = self.get_shortest_tour()
 		last_vertex = shortest_tour.vertexSequence[-1]
 		# find set of nearest equidistant edges
 		nearest_equidistant_edges = self.get_set_of_nearest_unvisited_edges(last_vertex)
@@ -226,7 +226,7 @@ class Router:
 	# add edges to shortest tour considering max cost from nearest unvisited equidistant set
 	def add_edges_to_shortest_tour_with_mean_cost_edge_from_nearest_unvisited_equidistant(self, heuristic_id : int):
 		# find shortest tour last vertex
-		shortest_tour = self.getShortestTour()
+		shortest_tour = self.get_shortest_tour()
 		last_vertex = shortest_tour.vertexSequence[-1]
 		# find set of nearest equidistant edges
 		nearest_equidistant_edges = self.get_set_of_nearest_unvisited_edges(last_vertex)
@@ -241,7 +241,7 @@ class Router:
 	# add edges to shortest tour considering random cost from nearest unvisited equidistant set
 	def add_edges_to_shortest_tour_with_random_cost_edge_from_nearest_unvisited_equidistant(self, heuristic_id : int):
 		# find shortest tour last vertex
-		shortest_tour = self.getShortestTour()
+		shortest_tour = self.get_shortest_tour()
 		last_vertex = shortest_tour.vertexSequence[-1]
 		# find set of nearest equidistant edges
 		nearest_equidistant_edges = self.get_set_of_nearest_unvisited_edges(last_vertex)
@@ -253,6 +253,20 @@ class Router:
 		# append all edges including selected edge
 		self.extend_tour_to_edge(random_cost_edge, shortest_tour)
 
+	# add edges to shortest tour considering random cost from nearest unvisited equidistant set
+	def add_edges_to_shortest_tour_with_round_robin_nearest_unvisited_equidistant(self, heuristic_id : int):
+		# find shortest tour last vertex
+		shortest_tour = self.get_shortest_tour()
+		last_vertex = shortest_tour.vertexSequence[-1]
+		# find set of nearest equidistant edges
+		nearest_equidistant_edges = self.get_set_of_nearest_unvisited_edges(last_vertex)
+		# no more edge options
+		if len(nearest_equidistant_edges) == 0:
+			return -1
+		# select the min cost edge
+		edge = nearest_equidistant_edges[heuristic_id % len(nearest_equidistant_edges)]
+		# append all edges including selected edge
+		self.extend_tour_to_edge(edge, shortest_tour)
 
 	# --------------------------------------------------------------- END TOUR CONSTRUCTING HEURISTICS ---------------------------------------------------------------------------------
 
@@ -377,8 +391,8 @@ class Router:
 		self.addVertexToTours(0)
 
 		while (len(self.getUnvisitedEdges()) > 0):
-			toursToEdges = self.getShortestToursToAllUnvisitedEdgesFromVertex(self.getShortestTour().vertexSequence[-1])
-			self.extend_tour_to_edge(toursToEdges[0][1], self.getShortestTour())
+			toursToEdges = self.getShortestToursToAllUnvisitedEdgesFromVertex(self.get_shortest_tour().vertexSequence[-1])
+			self.extend_tour_to_edge(toursToEdges[0][1], self.get_shortest_tour())
 
 		self.addVertexToTours(0)
 
