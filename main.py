@@ -7,6 +7,7 @@ from router import Router
 import sys
 import os
 import math
+import options
 
 from os import listdir
 from os import path
@@ -17,7 +18,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description=None)
     parser.add_argument('-i', '--inst', dest='instance', type=str, required=True, help='filepath to problem instance')
     parser.add_argument('-k', '--tours', dest='k_values', type=str, required=True, help='k number of tours. ex: -k 2,4,8')
-    parser.add_argument('-md', '--multi_depot', dest='multi_depot_routing', type=bool, default=False, required=False, help='build tours using multiple depots')
+    parser.add_argument('-d', '--depots', dest='depots', type=str, required=True, help='the deployment configuration (single, multi). ex: -d single')
     parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga. ex: -s 1234,3949')
     parser.add_argument('-j', '--heuristics', dest='heuristics', type=str, default='MMMR', required=False, help='the set of heuristics (MMMR, RR). ex: -j MMMR')
 
@@ -29,6 +30,7 @@ def parse_args():
     args.k_values = [int(i) for i in args.k_values.split(',')]
     args.seeds = [int(i) for i in args.seeds.split(',')]
     args.heuristics = args.heuristics.replace(' ', '')
+    args.depots = args.depots.replace(' ', '')
     return args
 
 def main():
@@ -40,6 +42,7 @@ def main():
     gph.solve_and_cache_shortest_paths()
     # gph.View(False)
     # TODO make sure to handle depots properly
+    ga_options = options.Options()
     # run for all values of k
     for k in args.k_values:
         print('Configuring evaluator for k=' + str(k) + ' tours')
@@ -68,9 +71,28 @@ def main():
                 evalor.heuristics.append(router.add_edges_to_shortest_tour_with_round_robin_nearest_unvisited_equidistant)
 
         # create the genetic algorithm with the evaluator
+
+
         visualize_ga = False
-        meta_ga = ga.GA(evalor, visualize_ga)
+        meta_ga = ga.GA(evalor, visualize_ga, ga_options)
         meta_ga.init()
+
+        meta_ga.meta_data = {
+            'instance': gph.name,
+            'k-value': k,
+            'depots': args.depots,
+            'heuristics': args.heuristics,
+            'target runs': len(args.seeds),
+            'ga': {
+                'pop size': ga_options.populationSize,
+                'num gens': ga_options.maxGen,
+                'selection type': ga_options.selectionType,
+                'crossover type': ga_options.crossType,
+                'mutation type': ga_options.mutType,
+                'p cross': ga_options.pCross,
+                'p mutation': ga_options.pMut,
+            }
+        }
 
         # for every seed run the GA
         print('Running MetaGA on ' + str(len(args.seeds)) + ' seeds:')

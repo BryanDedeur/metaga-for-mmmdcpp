@@ -11,16 +11,6 @@ import os
 
 import wandb
 
-wandb.init(project="meta-ga", entity="bryandedeur")
-
-wandb.config = {
-  "learning_rate": 0.001,
-  "epochs": 100,
-  "batch_size": 128
-}
-
-wandb.log({"loss": loss})
-
 from individual import Individual
 from evaluator import Evaluator
 from population import Population
@@ -28,10 +18,9 @@ from timeit import default_timer as timer
 from multiprocessing import Process, Pool, Queue, TimeoutError, process
 
 class GA:
-	def __init__(self, evaler, visualize = False):
-		self.version = 3.0
-		self.options = options.Options()
-
+	def __init__(self, evaler, visualize = False, options = None):
+		self.options = options
+		self.meta_data = {}
 		self.runCount = 0
 
 		# self.minFitness = float('inf')
@@ -188,16 +177,19 @@ class GA:
 					break
 		return numSeeds / self.runCount
 	
-
 	def run(self, seed = 0):
 		# set the seed
 		self.setSeed(seed)
 		start = timer()
+
+		wandb.init(project="meta-ga", name=str(seed), group="test1", config=self.meta_data)
+
 		# output to console run information
 		print(str(self.runCount + 1) + '. GA evolving on seed (' + str(self.seed) + '): [', end = '')
 		bestSeedObj = float('inf')
 		f = open("test_results.csv", "a")
 		for	gen in range(self.options.maxGen):
+			gen_time_stamp = timer()
 			if gen == 0:
 				# randomize population with whatever seed is set
 				self.population.randomize(0, self.population.size_parents())
@@ -220,6 +212,9 @@ class GA:
 			if self.population.bestIndividual.objective < bestSeedObj:
 				bestSeedObj = self.population.bestIndividual.objective
 
+			# upload to wandb the best
+			wandb.log({'best per gen obj': self.population.bestIndividual.objective, 'gen time (s)': timer()-gen_time_stamp})
+
 		f.close()
 
 		self.seedBestObjStats.addValue(bestSeedObj)
@@ -229,6 +224,8 @@ class GA:
 
 		# ouput to console timing information
 		print('] in ' + str(round(timer()-start,3)) + 's')
+
+		wandb.finish()
 
 	def createVisuals(self):
 		self.figure, self.axes  = plt.subplots(3)
