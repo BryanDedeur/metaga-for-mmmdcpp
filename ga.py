@@ -9,6 +9,18 @@ import numpy as np
 import statistics
 import os
 
+import wandb
+
+wandb.init(project="meta-ga", entity="bryandedeur")
+
+wandb.config = {
+  "learning_rate": 0.001,
+  "epochs": 100,
+  "batch_size": 128
+}
+
+wandb.log({"loss": loss})
+
 from individual import Individual
 from evaluator import Evaluator
 from population import Population
