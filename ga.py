@@ -213,7 +213,7 @@ class GA:
 				bestSeedObj = self.population.bestIndividual.objective
 
 			# upload to wandb the best
-			wandb.log({'best per gen obj': self.population.bestIndividual.objective, 'gen time (s)': timer()-gen_time_stamp})
+			wandb.log({'best objective': self.population.objStats.min,'worst objective': self.population.objStats.max,'ave objective': self.population.objStats.mean(), 'gen duration(s)': timer()-gen_time_stamp,'ga time(s)': timer()-start})
 
 		f.close()
 
