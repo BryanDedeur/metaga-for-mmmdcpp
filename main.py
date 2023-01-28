@@ -22,8 +22,8 @@ def parse_args():
     parser.add_argument('-d', '--depots', dest='depots', type=str, required=True, help='the deployment configuration (single, multi). ex: -d single')
     parser.add_argument('-s', '--seeds', dest='seeds', type=str, required=True, help='random seeds to run the ga. ex: -s 1234,3949')
     parser.add_argument('-j', '--heuristics', dest='heuristics', type=str, default='MMMR', required=False, help='the set of heuristics (MMMR, RR). ex: -j MMMR')
-
     args = parser.parse_args()
+
     # check and adjust the parsed args
     args.instance = args.instance.replace(' ', '')
     if not path.exists(args.instance):
@@ -50,8 +50,13 @@ def main():
 
         # create a router for constructing tours
         router = Router(gph, k)
+        depot = gph.size_v() - 1 # TODO fix for gdb instances
         for tour in router.tours:
-            tour.depot = gph.size_v() - 1
+            tour.depot = depot
+
+        depots = []
+        for tour in router.tours:
+            depots.append(tour.depot)
 
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k, router)
@@ -77,10 +82,10 @@ def main():
         meta_ga = ga.GA(evalor, ga_options)
         meta_ga.init()
 
-        meta_ga.meta_data = {
+        config = {
             'instance': gph.name,
             'k-value': k,
-            'depots': args.depots,
+            'depots': [tour.depot for tour in router.tours],
             'heuristics': args.heuristics,
             'target runs': len(args.seeds),
             'ga': {
@@ -95,7 +100,7 @@ def main():
         }
 
         def run_start(seed):
-            wandb.init(project="meta-ga", name=str(seed), group="test1", config=meta_ga.meta_data)
+            wandb.init(project="meta-ga", name=str(seed), group="test1", config=config)
             return
 
         def run_end(seed, best_individual, run_time_elapsed):
@@ -132,10 +137,7 @@ def main():
                 'gen best sum tour costs': router.getSumTourLengths()
             }
 
-            # for i in range(len(router.tours)):
-            #     log_info['gen best tour'+str(i) + ' cost'] = router.tours[i].cost
-
-            #  log to wandb
+            # capture data on wandb
             wandb.log(log_info)
             return
 
