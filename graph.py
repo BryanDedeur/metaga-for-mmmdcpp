@@ -321,7 +321,7 @@ class Graph:
         for i in range(self.size_v()):
             dist.append(float('inf'))
             spSet.append(False)
-            self.cachedDijkstras[src][i].AddVertex(src)
+            self.cachedDijkstras[src][i].add_vertex(src)
         dist[src] = 0
 
         # Find shortest paths

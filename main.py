@@ -50,6 +50,8 @@ def main():
 
         # create a router for constructing tours
         router = Router(gph, k)
+        for tour in router.tours:
+            tour.depot = gph.size_v() - 1
 
         # create the evaluator
         evalor = evaluator.Evaluator(gph, k, router)

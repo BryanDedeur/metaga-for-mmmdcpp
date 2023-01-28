@@ -19,6 +19,7 @@ class Tour:
         self.ax = None
         self.seed = 0
         self.k = 0
+        self.depot = 0
 
     def clear(self):
         self.vertexSequence.clear()
@@ -120,7 +121,7 @@ class Tour:
 
     def InjectShortestPathToVertex(self, vertex, shortestPath):
         for i in range(len(shortestPath.vertexSequence)):
-            self.AddVertex(shortestPath.vertexSequence[i])
+            self.add_vertex(shortestPath.vertexSequence[i])
 
     def HandleFirstVertexNoEdges(self, vertex):
         self.vertexSequence.append(vertex)
@@ -148,7 +149,7 @@ class Tour:
                 self.InjectShortestPathToVertex(vertex, self.graph.get_shortest_tour_between_vertices(self.vertexSequence[len(self.vertexSequence) - 1], vertex))
 
     # Adds a vertex and resolves missing edges inbetween vertices
-    def AddVertex(self, vertex):
+    def add_vertex(self, vertex):
         if (len(self.vertexSequence) == 0 and len(self.edgeSequence) == 0):
             self.HandleFirstVertexNoEdges(vertex)
         elif (len(self.vertexSequence) == 0 and len(self.edgeSequence) == 1):

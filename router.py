@@ -118,7 +118,7 @@ class Router:
 			self.tours[t].k = len(other.tours)
 		for i in range(len(self.tours)):
 			for v in other.tours[i].vertexSequence:
-				self.tours[i].AddVertex(v)
+				self.tours[i].add_vertex(v)
 		self.unvisitedEdges = []
 		for e in other.unvisitedEdges:
 			self.unvisitedEdges.append(e)
@@ -270,89 +270,12 @@ class Router:
 
 	# --------------------------------------------------------------- END TOUR CONSTRUCTING HEURISTICS ---------------------------------------------------------------------------------
 
-
-	# def findLowestCostUnvisitedEdge(self):
-	# 	lowestEdge = -1
-	# 	lowestEdgeValue = float('inf')
-	# 	for e in self.unvisitedEdges:
-	# 		if self.graph.get_edge_cost(e) < lowestEdgeValue:
-	# 			lowestEdge = e
-	# 			lowestEdgeValue = self.graph.get_edge_cost(e)
-	# 	return lowestEdge
-	
-	# def findHighestCostUnvisitedEdge(self):
-	# 	lowestEdge = -1
-	# 	lowestEdgeValue = 0
-	# 	for e in self.getUnvisitedEdges():
-	# 		if self.graph.get_edge_cost(e) > lowestEdgeValue:
-	# 			lowestEdge = e
-	# 			lowestEdgeValue = self.graph.get_edge_cost(e)
-	# 	return lowestEdge
-
-	# def findLowestCostNearestUnvisitedEdge(self, tourOfInterest, setSize):
-	# 	setOfSortedLengthEdges = self.get_set_of_nearest_unvisited_edges(tourOfInterest.vertexSequence[-1], setSize)
-	# 	if len(setOfSortedLengthEdges) == 0:
-	# 		return -1
-	# 	return setOfSortedLengthEdges[0]
-
-	# def findMidCostNearestUnvisitedEdge(self, tourOfInterest, setSize):
-	# 	setOfSortedLengthEdges = self.get_set_of_nearest_unvisited_edges(tourOfInterest.vertexSequence[-1], setSize)
-	# 	if len(setOfSortedLengthEdges) == 0:
-	# 		return -1
-	# 	return setOfSortedLengthEdges[int((len(setOfSortedLengthEdges) - 1) / 2)]
-
-	# def findRandomCostNearestUnvisitedEdge(self, tourOfInterest, setSize):
-	# 	setOfSortedLengthEdges = self.get_set_of_nearest_unvisited_edges(tourOfInterest.vertexSequence[-1], setSize)
-	# 	if len(setOfSortedLengthEdges) == 0:
-	# 		return -1
-	# 	return setOfSortedLengthEdges[random.randint(0, len(setOfSortedLengthEdges) - 1)]
-
-	# def findHighestCostNearestUnvisitedEdge(self, tourOfInterest, setSize):
-	# 	setOfSortedLengthEdges = self.get_set_of_nearest_unvisited_edges(tourOfInterest.vertexSequence[-1], setSize)
-	# 	if len(setOfSortedLengthEdges) == 0:
-	# 		return -1
-	# 	return setOfSortedLengthEdges[len(setOfSortedLengthEdges) - 1]
-
-	# # finds the first edge with the arriving vertex (using dijkstras) being odd degree
-	# def findEdgeConnectedToOddDegreeVertexWithinNearestUnivistedEdges(self, tourOfInterest, setSize):
-	# 	unvisitedTourEdgePairs = self.getShortestToursToAllUnvisitedEdgesFromVertex(tourOfInterest.vertexSequence[-1])
-	# 	if len(unvisitedTourEdgePairs) == 0:
-	# 		return -1
-	# 	for tourEdgePair in unvisitedTourEdgePairs:
-	# 		if self.graph.GetEdgeDegreeAtVertex(tourEdgePair[0].vertexSequence[-1]) % 2 != 0:
-	# 			return tourEdgePair[1]
-	# 	return unvisitedTourEdgePairs[0][1]
-
-	# # finds the first edge with the arriving vertex (using dijkstras) being odd degree
-	# def findEdgeConnectedToEvenDegreeVertexWithinNearestUnivistedEdges(self, tourOfInterest, setSize):
-	# 	unvisitedTourEdgePairs = self.getShortestToursToAllUnvisitedEdgesFromVertex(tourOfInterest.vertexSequence[-1])
-	# 	if len(unvisitedTourEdgePairs) == 0:
-	# 		return -1
-	# 	for tourEdgePair in unvisitedTourEdgePairs:
-	# 		if self.graph.GetEdgeDegreeAtVertex(tourEdgePair[0].vertexSequence[-1]) % 2 != 0:
-	# 			return tourEdgePair[1]
-	# 	return unvisitedTourEdgePairs[0][1]
-
-	# def findRandomCostNearestUnvisitedEdge(self):
-	# 	unvisitedEdgesSortedByDistance = self.getShortestToursToAllUnvisitedEdgesFromVertex(self.tours[self.shortestTourId].vertexSequence[-1])
-	# 	setOfEdges = []
-	# 	shortestTourLen = float('inf')
-	# 	for tourEdgePair in unvisitedEdgesSortedByDistance:
-	# 		if tourEdgePair[0].cost <= shortestTourLen:
-	# 			shortestTourLen = tourEdgePair[0].cost
-	# 			setOfEdges.append(tourEdgePair[1])
-	# 		else:
-	# 			break
-	# 	if len(setOfEdges) == 0:
-	# 		return -1
-	# 	return setOfEdges[random.randint(0, len(setOfEdges) - 1)]
-
 	def addVertexToTours(self, vertexId):
 		for tour in self.tours:
-			tour.AddVertex(vertexId)
+			tour.add_vertex(vertexId)
 
 	def addVertexToTour(self, vertexId, tour):
-		tour.AddVertex(vertexId)
+		tour.add_vertex(vertexId)
 
 	def extend_tour_to_edge(self, edgeId, tour):
 		if edgeId > -1:

@@ -135,20 +135,17 @@ class Evaluator:
 		decoding = self.decode(encodedData)
 
 		self.router.clear()
-		for k_i in range(self.numTours):
-			#k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
-			k_depot = self.graph.size_v()-1
-			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
+		# add first vertex to tour
+		for tour in self.router.tours:
+			tour.add_vertex(tour.depot)
 
 		# convert the heuristics to tours
 		for h in decoding:
 			self.heuristics[h](h)
 
 		# return all tours to their depots
-		for k_i in range(self.numTours):
-			#k_depot = self.graph.size_v() - (k_i - (math.floor(k_i/4)*4)) - 1
-			k_depot = self.graph.size_v()-1
-			self.router.addVertexToTour(k_depot, self.router.tours[k_i])
+		for tour in self.router.tours:
+			tour.add_vertex(tour.depot)
 
 		# end time track stats
 		time_elapsed = timer() - start
