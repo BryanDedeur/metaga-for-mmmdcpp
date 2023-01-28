@@ -16,7 +16,7 @@ from timeit import default_timer as timer
 from multiprocessing import Process, Pool, Queue, TimeoutError, process
 
 class GA:
-	def __init__(self, evaler, visualize = False, options = None):
+	def __init__(self, evaler, options = None):
 		self.options = options
 		self.meta_data = {}
 		self.runCount = 0
@@ -69,12 +69,6 @@ class GA:
 		self.fitLines = []
 		self.objLines = []
 		self.timeLines = []
-
-		self.visualize = visualize
-		if self.visualize:
-			self.createVisuals()
-			plt.ion()
-			self.show()
 
 		# parallelization
 		self.processEvaluators = []
@@ -191,7 +185,7 @@ class GA:
 		# output to console run information
 		print(str(self.runCount + 1) + '. GA evolving on seed (' + str(self.seed) + '): [', end = '')
 		bestSeedObj = float('inf')
-		f = open("test_results.csv", "a")
+
 		for	gen in range(self.options.maxGen):
 			self.on_generation_start(seed, gen)
 			gen_time_stamp = timer()
@@ -202,24 +196,18 @@ class GA:
 				# regenerate new population
 				self.population.regenerate()
 
-			f.write(self.population.data_str(str(seed) + ',' + str(gen) + ','))
-
 			# ouput to console the status
 			if (gen % int(self.options.maxGen * 0.05) == 0):
 				print('.', end = '')
 			
 			# gather statistics and visualize
 			self.genStatistics(self.population, gen)
-			if self.visualize:
-				self.updateVisuals(gen)
 
 			# get the best objective value
 			if self.population.bestIndividual.objective < bestSeedObj:
 				bestSeedObj = self.population.bestIndividual.objective
 
 			self.on_generation_end(seed, gen, self.population.bestIndividual, timer()-gen_time_stamp, timer()-start)
-
-		f.close()
 
 		self.seedBestObjStats.addValue(bestSeedObj)
 		self.seedTimeStats.addValue(timer()-start)
@@ -230,77 +218,6 @@ class GA:
 		print('] in ' + str(round(timer()-start,3)) + 's')
 
 		self.on_run_end(seed, self.bestIndividual, timer()-start)
-
-	def createVisuals(self):
-		self.figure, self.axes  = plt.subplots(3)
-
-		xvalues = np.linspace(0, self.options.maxGen, self.options.maxGen)
-		yvalues = np.linspace(0, 0, self.options.maxGen)
-
-		for i in range(3):
-			if i == 0:
-				style = 'b-'
-				label = 'min'
-			elif i == 1:
-				style = 'g-'
-				label = 'ave'
-			elif i == 2:
-				style = 'r-'
-				label = 'max'
-			self.fitLines.append(self.axes[0].plot(xvalues, yvalues, style)[0])
-			self.objLines.append(self.axes[1].plot(xvalues, yvalues, style)[0])
-			self.timeLines.append(self.axes[2].plot(xvalues, yvalues, style)[0])
-		
-		self.axes[0].set_title('ave seed ave generation k=' + str(len(self.eval.router.tours)) + ' results ' + self.eval.GetProblemName())
-		self.axes[0].set_ylabel('Fitness')
-
-		# self.axes[1].set_xlabel('Generation')
-		self.axes[1].set_ylabel('Objective')
-		self.objAnnotation = self.axes[1].annotate('NICE', (0.5,0.5))
-
-		self.axes[2].set_xlabel('Generation')
-		self.axes[2].set_ylabel('Time')
-
-	def updateVisuals(self, gen):
-		# set the y data on all the lines
-		self.fitLines[0].set_ydata(self.aveMinFitData)
-		self.fitLines[1].set_ydata(self.aveAveFitData)
-		self.fitLines[2].set_ydata(self.aveMaxFitData)
-		self.objLines[0].set_ydata(self.aveMinObjData)
-		self.objLines[1].set_ydata(self.aveAveObjData)
-		self.objLines[2].set_ydata(self.aveMaxObjData)
-		self.timeLines[0].set_ydata(self.aveMinTimeData)
-		self.timeLines[1].set_ydata(self.aveAveTimeData)
-		self.timeLines[2].set_ydata(self.aveMaxTimeData)
-
-		# resize the plots
-		if gen != 0:
-			genLim = gen
-			if self.runCount > 0:
-				genLim = self.options.maxGen
-			offsetPercentage = 0.05
-			minValue = min(self.aveMinFitData[:genLim])
-			maxValue = max(self.aveMaxFitData[:genLim])
-			minMaxRange = maxValue - minValue
-			self.axes[0].set_ylim(minValue - (offsetPercentage * minMaxRange), maxValue + (offsetPercentage * minMaxRange))
-
-			minValue = min(self.aveMinObjData[:genLim])
-			maxValue = max(self.aveMaxObjData[:genLim])
-			minMaxRange = maxValue - minValue
-			self.axes[1].set_ylim(minValue - (offsetPercentage * minMaxRange), maxValue + (offsetPercentage * minMaxRange))
-			if minMaxRange == 0:
-				self.axes[1].set_yticks(np.arange(minValue, maxValue, 1))
-			else:
-				self.axes[1].set_yticks(np.arange(minValue, maxValue, round(minMaxRange)*.2))
-
-			minValue = min(self.aveMinTimeData[:genLim])
-			maxValue = max(self.aveMaxTimeData[:genLim])
-			minMaxRange = maxValue - minValue
-			self.axes[2].set_ylim(minValue - (offsetPercentage * minMaxRange), maxValue + (offsetPercentage * minMaxRange))
-
-		# update visuals
-		self.figure.canvas.draw()
-		self.figure.canvas.flush_events()
 
 	def getHeaderString(self, delim = ',', ending = '\n'):
 		return (
@@ -345,11 +262,6 @@ class GA:
 			resultsFile.write(self.getHeaderString('\t', '\n'))
 		resultsFile.write(self.to_string('\t', '\n'))
 		resultsFile.close()
-
-		# visuals
-		self.plotData()
-		visualsPath = os.getcwd() + self.options.resultsDir + self.eval.problem.name + '.png'
-		self.figure.savefig(visualsPath)
 
 	def show(self, blocking = False):
 		#print("SHOWING")

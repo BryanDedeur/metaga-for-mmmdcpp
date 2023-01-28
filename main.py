@@ -72,10 +72,7 @@ def main():
                 evalor.heuristics.append(router.add_edges_to_shortest_tour_with_round_robin_nearest_unvisited_equidistant)
 
         # create the genetic algorithm with the evaluator
-
-
-        visualize_ga = False
-        meta_ga = ga.GA(evalor, visualize_ga, ga_options)
+        meta_ga = ga.GA(evalor, ga_options)
         meta_ga.init()
 
         meta_ga.meta_data = {
